@@ -1,301 +1,322 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>INSAN Organisation Centre – Luuka Uganda</title>
-  <style>
-    * {margin: 0; padding: 0; box-sizing: border-box;}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pearl Dreams Safaris</title>
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f6f4ff;
-      color: #333;
-      line-height: 1.6;
-      font-size: 18px;
-    }
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#eef1f7;
+color:#222;
+}
 
-    /* HEADER */
-    header {
-      background: linear-gradient(to right, #5a00b5, #9b4bff);
-      color: white;
-      padding: 35px 15px;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-      font-size: 26px;
-      line-height: 1.5;
-      font-weight: 700;
-    }
+/* HERO */
+.hero{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px;
+background:linear-gradient(90deg,#4b6cb7,#6a5acd,#6c757d);
+color:white;
+position:sticky;
+top:0;
+z-index:10;
+}
+.logo{font-size:20px;font-weight:bold}
+nav a{color:white;margin:0 10px;text-decoration:none}
 
-    /* NAVIGATION */
-    nav {
-      background: #ffffff;
-      padding: 15px 25px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-    }
+/* SLIDER */
+.slider{
+height:380px;
+position:relative;
+overflow:hidden;
+background:#000;
+}
 
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 35px;
-    }
+.slider img{
+width:100%;
+height:100%;
+object-fit:cover;
+position:absolute;
+opacity:0;
+transition:opacity 1s ease-in-out;
+}
 
-    nav ul li a {
-      text-decoration: none;
-      font-size: 19px;
-      font-weight: 600;
-      color: #5a00b5;
-      transition: 0.3s;
-    }
+.slider img.active{
+opacity:1;
+}
 
-    nav ul li a:hover {
-      color: #9b4bff;
-      transform: scale(1.05);
-    }
+.caption{
+position:absolute;
+bottom:20px;
+left:20px;
+background:rgba(0,0,0,0.5);
+color:white;
+padding:10px 15px;
+border-radius:8px;
+}
 
-    /* MENU TOGGLE */
-    .menu-toggle {
-      display: none;
-      flex-direction: column;
-      gap: 6px;
-      cursor: pointer;
-    }
+/* SECTIONS */
+.section{
+padding:40px;
+}
 
-    .menu-toggle div {
-      width: 32px;
-      height: 4px;
-      background: #5a00b5;
-    }
+/* CARDS */
+.cards{
+display:flex;
+flex-wrap:wrap;
+gap:15px;
+}
+.card{
+flex:1;
+min-width:200px;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
 
-    @media (max-width: 768px) {
-      nav ul {display: none; flex-direction: column; width: 100%; margin-top: 10px;}
-      nav ul.active {display: flex;}
-      .menu-toggle {display: flex;}
-    }
+/* COUNTERS */
+.counts{
+display:flex;
+flex-wrap:wrap;
+gap:15px;
+}
+.count{
+flex:1;
+background:white;
+padding:20px;
+text-align:center;
+border-radius:10px;
+}
 
-    /* HERO */
-    .hero {
-      background-image: url('https://images.unsplash.com/photo-1509099836639-18ba1795216d');
-      background-size: cover;
-      background-position: center;
-      height: 70vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      color: white;
-      position: relative;
-      padding: 20px;
-    }
+/* FORM */
+form{
+display:flex;
+flex-direction:column;
+gap:10px;
+max-width:400px;
+}
+input,textarea{
+padding:10px;
+border:1px solid #ccc;
+border-radius:5px;
+}
+button{
+padding:10px;
+background:#4b6cb7;
+color:white;
+border:none;
+cursor:pointer;
+border-radius:5px;
+}
 
-    .hero::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-    }
+/* REVIEWS */
+.review{
+background:white;
+padding:15px;
+margin-top:10px;
+border-radius:10px;
+}
 
-    .hero h2, .hero p {
-      position: relative;
-      z-index: 2;
-    }
-
-    .hero h2 {
-      font-size: 48px;
-      font-weight: 800;
-      text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
-      margin-bottom: 15px;
-    }
-
-    .hero p {font-size: 22px;}
-
-    /* SECTIONS */
-    .section {
-      padding: 70px 25px;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    .section h3 {
-      font-size: 34px;
-      color: #5a00b5;
-      text-align: center;
-      font-weight: 800;
-      margin-bottom: 25px;
-    }
-
-    .section p, .section ul {
-      text-align: center;
-      max-width: 900px;
-      margin: auto;
-      font-size: 19px;
-    }
-
-    /* GALLERY */
-    .gallery {
-      margin-top: 40px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 25px;
-    }
-
-    .gallery img {
-      width: 100%;
-      height: 260px;
-      border-radius: 18px;
-      object-fit: cover;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      transition: 0.3s;
-      background: #eee;
-    }
-
-    .gallery img:hover {transform: scale(1.05);}    
-
-    /* CONTACT */
-    #contact p {font-size: 20px; margin: 12px 0; text-align:center;}
-
-    .social-icons {
-      display: flex;
-      justify-content: center;
-      gap: 25px;
-      margin-top: 20px;
-    }
-
-    .social-icons img {
-      width: 45px;
-      transition: 0.3s;
-    }
-
-    .social-icons img:hover {transform: scale(1.2);}    
-
-    /* FOOTER */
-    footer {
-      background: #262626;
-      text-align: center;
-      padding: 30px;
-      color: white;
-      font-size: 17px;
-      margin-top: 50px;
-    }
-  </style>
+/* FOOTER */
+footer{
+background:#2f3542;
+color:white;
+padding:30px;
+margin-top:40px;
+}
+.footer-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+}
+.small{
+font-size:13px;
+color:#ccc;
+}
+</style>
 </head>
+
 <body>
 
-  <header>
-    بسم الله الرحمن الرحيم<br>
-   مركز جمعية انسان الخيرية لووكا_أوغندا <br>
-    INSAN Organisation Centre – Luuka Uganda
-  </header>
+<!-- HERO -->
+<header class="hero">
+<div class="logo">Pearl Dreams Safaris</div>
+<nav>
+<a href="#dest">Destinations</a>
+<a href="#book">Booking</a>
+<a href="#rev">Reviews</a>
+</nav>
+</header>
 
-  <nav>
-    <div class="menu-toggle" onclick="toggleMenu()">
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-    <ul id="menu">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#about">About Us</a></li>
-      <li><a href="#programs">Programs</a></li>
-      <li><a href="#gallery">Gallery</a></li>
-      <li><a href="#donate">Donate</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-  </nav>
+<!-- SLIDER -->
+<div class="slider">
+<img class="active" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee">
+<img src="https://images.unsplash.com/photo-1548013146-72479768bada">
+<img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470">
+<img src="https://images.unsplash.com/photo-1523805009345-7448845a9e53">
+<div class="caption" id="caption">Safari Adventures</div>
+</div>
 
-  <section class="hero" id="home">
-    <h2>Every Child Deserves Love & a Future</h2>
-    <p>Join us in supporting orphans in Luuka, Uganda — Sponsor, Donate, Change a Life.</p>
-    
-Thank you for being a light in a child’s darkest moment.
-You are truly a blessing.</P>
-  </section>
+<!-- DESTINATIONS -->
+<section class="section" id="dest">
+<h2>Top Destinations</h2>
+<div class="cards">
+<div class="card">Uganda - Gorilla Trekking</div>
+<div class="card">Kenya - Masai Mara</div>
+<div class="card">Tanzania - Serengeti</div>
+<div class="card">Rwanda - Volcanoes Park</div>
+</div>
+</section>
 
-  <section class="section" id="about">
-    <h3>About Us</h3>
-    <p>INSAN Organisation Centre Luuka Uganda is dedicated to caring for orphans and vulnerable children.
-       We provide shelter, education, food, and emotional support to give them a brighter future.</p>
-  </section>
+<!-- COUNTERS -->
+<section class="section">
+<h2>Our Impact</h2>
+<div class="counts">
+<div class="count">500+ Tours</div>
+<div class="count">10,000+ Tourists</div>
+<div class="count">4 Countries</div>
+</div>
+</section>
 
-  <section class="section" id="programs">
-    <h3>Our Programs</h3>
-    <ul>
-      <li>Orphan Care & Support</li>
-      <li>Education Sponsorship</li>
-      <li>Health & Nutrition Program</li>
-      <li>Community Outreach</li>
-    </ul>
-  </section>
-  <section class="section" id="gallery">
-    <h3>Gallery – Our Children</h3>
-    <div class="gallery">
-      <img src="IMG-20251129-WA0001.jpg" alt="Child 1" />
-      <p>You may have walked through pain that others cannot see, and you may carry questions that feel too heavy for your heart. But even in the days when you feel alone, you are not forgotten, you are not abandoned, and you are not unloved.
-</p>
-      <img src="IMG-20251129-WA0002.jpg" alt="Child 2" />
-    <p>Your life has a purpose. Your story is still being written, and it is filled with hope, strength, and possibility. What you have faced does not define you—your courage, your kindness, and your dreams do.</p>
-      <img src="IMG-20251129-WA0003.jpg" alt="Child 3" />
-      <p>Always remember:
-You are worthy of love.
-You deserve safety and happiness.
-You matter in this world more than you know.</p>
-      <img src="IMG-20251129-WA0004.jpg" alt="Child 4" />
-      <p>There are people who care deeply about you and are ready to walk with you, guide you, and support you as you grow. Let your heart stay open to hope. Let your dreams remain alive. And believe—truly believe—that your future can be brighter than your past.
-</p>
-      <img src="IMG-20251129-WA0005.jpg" alt="Child 5" />
-      <p>Life may have taken people from you, but it has never taken away your value. You are a gift to this world, and nothing that happened to you can reduce your worth. Your heart has survived things that many could not handle — and that makes you strong, even on days when you don’t feel it.
-</p>
-      <img src="IMG-20251129-WA0006.jpg" alt="Child 6" />
-      <p>Please know this: your life still has beautiful chapters ahead.
-There are people who care for you, people who want to see you succeed, and people who believe in you even when you struggle to believe in yourself.</p>
-      <img src="IMG-20251129-WA0007.jpg" alt="Child 7" />
-      <p>And no matter your past, a brighter future is still possible for you.
-You are loved. You belong. And you have a place in this world.
-</p>
-    </div>
-  </section>
-      
-  <section class="section" id="donate">
-    <h3>Support Our Mission</h3>
-    <p>Your donation helps us provide food, clothes, medical care, and education to orphans.</p>
-    <P>Your kindness has changed a child’s life. Because of you, a child who once felt alone now has hope, safety, and a chance to dream again. Your support is more than a donation — it is love, protection, and a new beginning.
+<!-- BOOKING -->
+<section class="section" id="book">
+<h2>Book Your Safari</h2>
 
-    <p><strong>Contact us for mobile money donations.</strong></p>
-  </section>
+<form id="bookingForm">
+<input id="name" placeholder="Full Name" required>
+<input id="email" placeholder="Email" required>
+<input id="destination" placeholder="Destination" required>
+<input type="date" id="date" required>
+<button type="submit">Submit Booking</button>
+</form>
 
-  <section class="section" id="contact">
-    <h3>Contact</h3>
-    <p>Email: Huseintenywa40@gmail.com</p>
-    <p>Phone: +256 756738110</p>
-    <p>Phone: +256 784729103</p>
-    <p>Address: Luuka, Uganda</p>
+<p id="msg"></p>
+</section>
 
-    <h3>Follow Us</h3>
-    <div class="social-icons">
-      <a href="https://www.instagram.com/p/DReIDupjZy8/?igsh=MWQyMm1wbmZ2NHBveg==" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png"></a>
-      <a href="https://www.facebook.com/share/17sBiPYWns/" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png"></a>
-      <a href="https://x.com/HuseinTeny19718?t=DxSDvcagic_aHRWjpXhEDQ&s=09" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png"></a>
-      <a href="https://www.tiktok.com/@user7792397592536?_r=1&_t=ZM-91p18oDNRLn" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/3046/3046120.png"></a>
-    </div>
-  </section>
+<!-- REVIEWS -->
+<section class="section" id="rev">
+<h2>Reviews</h2>
+<div class="review">★★★★★ Amazing safari experience!</div>
+<div class="review">★★★★★ Best travel service in East Africa!</div>
+<div class="review">★★★★★ Highly recommended!</div>
+</section>
 
-  <footer>
-    <p>&copy; 2025 INSAN Organisation Centre – All Rights Reserved</p>
-  </footer>
+<!-- FOOTER -->
+<footer>
+<div class="footer-grid">
 
-  <script>
-    function toggleMenu() {
-      document.getElementById('menu').classList.toggle('active');
-    }
+<div>
+<h3>Payments</h3>
+<p>Visa • Mastercard • PayPal • MTN MoMo • Airtel Money</p>
+</div>
 
-  </script>
+<div>
+<h3>Contacts</h3>
+<p>+256 770 462 422</p>
+<p>info@pearldreams.com</p>
+</div>
+
+<div>
+<h3>Social Media</h3>
+<p>Facebook • Instagram • TikTok</p>
+</div>
+
+<div>
+<h3>Links</h3>
+<p>About</p>
+<p>Privacy</p>
+<p>Terms</p>
+</div>
+
+</div>
+
+<p class="small">© 2026 Pearl Dreams Safaris</p>
+</footer>
+
+<!-- EMAILJS -->
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+
+<!-- FIREBASE + LOGIC -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+/* 🔥 FIREBASE CONFIG (REPLACE) */
+const firebaseConfig = {
+apiKey: "YOUR_API_KEY",
+authDomain: "YOUR_AUTH_DOMAIN",
+projectId: "YOUR_PROJECT_ID",
+storageBucket: "YOUR_BUCKET",
+messagingSenderId: "YOUR_SENDER_ID",
+appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* EMAILJS */
+emailjs.init("YOUR_PUBLIC_KEY");
+
+document.getElementById("bookingForm").addEventListener("submit", async (e)=>{
+e.preventDefault();
+
+let name = document.getElementById("name").value;
+let email = document.getElementById("email").value;
+let destination = document.getElementById("destination").value;
+let date = document.getElementById("date").value;
+
+try{
+/* SAVE TO FIREBASE */
+await addDoc(collection(db,"bookings"),{
+name,email,destination,date,time:new Date()
+});
+
+/* SEND EMAIL */
+await emailjs.send("YOUR_SERVICE_ID","YOUR_TEMPLATE_ID",{
+name,email,destination,date
+});
+
+document.getElementById("msg").innerText =
+"Booking successful! Check your email.";
+
+}catch(err){
+document.getElementById("msg").innerText =
+"Error sending booking.";
+console.log(err);
+}
+});
+</script>
+
+<!-- SLIDER SCRIPT -->
+<script>
+const captions=[
+"Explore Uganda Gorilla Trekking",
+"Discover Kenya Masai Mara",
+"Experience Tanzania Serengeti",
+"Visit Rwanda Volcanoes"
+];
+
+let index=0;
+
+function slideShow(){
+const images=document.querySelectorAll(".slider img");
+const caption=document.getElementById("caption");
+
+images.forEach(img=>img.classList.remove("active"));
+
+images[index].classList.add("active");
+caption.innerText=captions[index];
+
+index=(index+1)%images.length;
+}
+
+setInterval(slideShow,4000);
+</script>
 
 </body>
 </html>
