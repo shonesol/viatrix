@@ -1,9 +1,12 @@
-<!<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pearl Dreams Safaris</title>
+
+<!-- ICONS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 body{
@@ -27,7 +30,7 @@ z-index:1000;
 }
 .logo{font-size:20px;font-weight:bold}
 
-/* MENU BUTTON */
+/* MENU */
 .menu-btn{
 font-size:26px;
 cursor:pointer;
@@ -36,7 +39,6 @@ border:none;
 color:white;
 }
 
-/* MENU */
 .menu{
 position:absolute;
 top:60px;
@@ -96,18 +98,24 @@ box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
 
 /* COUNTERS */
-.counts{display:flex;flex-wrap:wrap;gap:15px}
+.counts{
+display:flex;
+flex-wrap:wrap;
+gap:15px;
+}
 .count{
 flex:1;
 background:white;
 padding:20px;
 text-align:center;
 border-radius:10px;
+font-size:22px;
+font-weight:bold;
 }
 
-/* FORMS */
+/* FORM */
 form{display:flex;flex-direction:column;gap:10px;max-width:400px}
-input,textarea{
+input{
 padding:10px;
 border:1px solid #ccc;
 border-radius:5px;
@@ -142,6 +150,19 @@ grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
 gap:20px;
 }
 .small{font-size:13px;color:#ccc}
+
+/* SOCIAL ICONS */
+.social a{
+color:white;
+margin-right:10px;
+font-size:20px;
+}
+
+/* PAYMENT ICONS */
+.payments i{
+font-size:28px;
+margin-right:10px;
+}
 </style>
 </head>
 
@@ -170,7 +191,7 @@ gap:20px;
 </div>
 
 <!-- DESTINATIONS -->
-<section id="dest" class="section">
+<section class="section" id="dest">
 <h2>Top Destinations</h2>
 <div class="cards">
 <div class="card">Uganda - Gorilla Trekking</div>
@@ -184,14 +205,14 @@ gap:20px;
 <section class="section">
 <h2>Our Impact</h2>
 <div class="counts">
-<div class="count">500+ Tours</div>
-<div class="count">10,000+ Tourists</div>
-<div class="count">4 Countries</div>
+<div class="count" data-target="500">0</div>
+<div class="count" data-target="10000">0</div>
+<div class="count" data-target="4">0</div>
 </div>
 </section>
 
 <!-- BOOKING -->
-<section id="book" class="section">
+<section class="section" id="book">
 <h2>Book Safari</h2>
 <form id="bookingForm">
 <input id="name" placeholder="Full Name" required>
@@ -204,25 +225,29 @@ gap:20px;
 </section>
 
 <!-- REVIEWS -->
-<section id="rev" class="section">
+<section class="section" id="rev">
 <h2>Reviews</h2>
-
 <div id="reviewList"></div>
 
-<h3>Write a Review</h3>
+<h3>Write Review</h3>
 <form onsubmit="addReview(event)">
-<input id="reviewText" placeholder="Write your review..." required>
-<button type="submit">Submit Review</button>
+<input id="reviewText" placeholder="Write review..." required>
+<button type="submit">Submit</button>
 </form>
 </section>
 
 <!-- FOOTER -->
 <footer>
+
 <div class="footer-grid">
 
-<div>
+<div class="payments">
 <h3>Payments</h3>
-<p>Visa • Mastercard • PayPal • MTN MoMo • Airtel Money</p>
+<i class="fab fa-cc-visa"></i>
+<i class="fab fa-cc-mastercard"></i>
+<i class="fab fa-paypal"></i>
+<i class="fas fa-mobile-alt"></i>
+<p class="small">MTN & Airtel Mobile Money</p>
 </div>
 
 <div>
@@ -231,9 +256,12 @@ gap:20px;
 <p>info@pearldreams.com</p>
 </div>
 
-<div>
-<h3>Social</h3>
-<p>Facebook • Instagram • TikTok</p>
+<div class="social">
+<h3>Social Media</h3>
+<a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
+<a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+<a href="https://tiktok.com" target="_blank"><i class="fab fa-tiktok"></i></a>
+<a href="https://youtube.com" target="_blank"><i class="fab fa-youtube"></i></a>
 </div>
 
 <div>
@@ -251,12 +279,12 @@ gap:20px;
 <!-- EMAILJS -->
 <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 
-<!-- FIREBASE + APP -->
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-/* 🔥 FIREBASE CONFIG (REPLACE) */
+/* FIREBASE CONFIG */
 const firebaseConfig = {
 apiKey: "YOUR_API_KEY",
 authDomain: "YOUR_AUTH_DOMAIN",
@@ -269,17 +297,16 @@ appId: "YOUR_APP_ID"
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* EMAILJS */
 emailjs.init("YOUR_PUBLIC_KEY");
 
 /* BOOKING */
 document.getElementById("bookingForm").addEventListener("submit", async (e)=>{
 e.preventDefault();
 
-let name=document.getElementById("name").value;
-let email=document.getElementById("email").value;
-let destination=document.getElementById("destination").value;
-let date=document.getElementById("date").value;
+let name=nameInput.value;
+let email=emailInput.value;
+let destination=destinationInput.value;
+let date=dateInput.value;
 
 try{
 await addDoc(collection(db,"bookings"),{
@@ -290,26 +317,21 @@ await emailjs.send("YOUR_SERVICE_ID","YOUR_TEMPLATE_ID",{
 name,email,destination,date
 });
 
-document.getElementById("msg").innerText="Booking successful!";
+document.getElementById("msg").innerText="Booking sent!";
 }catch(err){
-document.getElementById("msg").innerText="Error sending booking.";
+document.getElementById("msg").innerText="Error!";
 }
 });
 
-/* REVIEWS SAVE TO FIREBASE */
+/* REVIEWS */
 window.addReview = async function(e){
 e.preventDefault();
-
 let text=document.getElementById("reviewText").value;
 
-await addDoc(collection(db,"reviews"),{
-text,time:new Date()
-});
-
+await addDoc(collection(db,"reviews"),{text});
 document.getElementById("reviewText").value="";
 }
 
-/* LOAD REVIEWS LIVE */
 onSnapshot(collection(db,"reviews"),(snap)=>{
 let html="";
 snap.forEach(doc=>{
@@ -319,13 +341,15 @@ document.getElementById("reviewList").innerHTML=html;
 });
 </script>
 
-<!-- SLIDER -->
+<!-- SLIDER + COUNTERS -->
 <script>
+// MENU
 function toggleMenu(){
 const menu=document.getElementById("menu");
-menu.style.display = menu.style.display==="flex"?"none":"flex";
+menu.style.display=menu.style.display==="flex"?"none":"flex";
 }
 
+// SLIDER
 const captions=[
 "Explore Uganda Gorilla Trekking",
 "Discover Kenya Masai Mara",
@@ -340,6 +364,23 @@ document.querySelectorAll(".slider img")[i].classList.add("active");
 document.getElementById("caption").innerText=captions[i];
 i=(i+1)%captions.length;
 },4000);
+
+// COUNTER ANIMATION
+const counters=document.querySelectorAll(".count");
+counters.forEach(counter=>{
+let target=+counter.getAttribute("data-target");
+let count=0;
+
+let interval=setInterval(()=>{
+count+=Math.ceil(target/100);
+counter.innerText=count;
+
+if(count>=target){
+counter.innerText=target+"+";
+clearInterval(interval);
+}
+},20);
+});
 </script>
 
 </body>
