@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -23,19 +23,45 @@ background:linear-gradient(90deg,#4b6cb7,#6a5acd,#6c757d);
 color:white;
 position:sticky;
 top:0;
-z-index:10;
+z-index:1000;
 }
 .logo{font-size:20px;font-weight:bold}
-nav a{color:white;margin:0 10px;text-decoration:none}
+
+/* MENU BUTTON */
+.menu-btn{
+font-size:26px;
+cursor:pointer;
+background:none;
+border:none;
+color:white;
+}
+
+/* MENU */
+.menu{
+position:absolute;
+top:60px;
+right:20px;
+background:white;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+display:none;
+flex-direction:column;
+min-width:160px;
+}
+.menu a{
+padding:12px;
+text-decoration:none;
+color:#333;
+border-bottom:1px solid #eee;
+}
+.menu a:hover{background:#f0f0f0}
 
 /* SLIDER */
 .slider{
 height:380px;
 position:relative;
 overflow:hidden;
-background:#000;
 }
-
 .slider img{
 width:100%;
 height:100%;
@@ -44,11 +70,7 @@ position:absolute;
 opacity:0;
 transition:opacity 1s ease-in-out;
 }
-
-.slider img.active{
-opacity:1;
-}
-
+.slider img.active{opacity:1}
 .caption{
 position:absolute;
 bottom:20px;
@@ -60,16 +82,10 @@ border-radius:8px;
 }
 
 /* SECTIONS */
-.section{
-padding:40px;
-}
+.section{padding:40px}
 
 /* CARDS */
-.cards{
-display:flex;
-flex-wrap:wrap;
-gap:15px;
-}
+.cards{display:flex;flex-wrap:wrap;gap:15px}
 .card{
 flex:1;
 min-width:200px;
@@ -80,11 +96,7 @@ box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
 
 /* COUNTERS */
-.counts{
-display:flex;
-flex-wrap:wrap;
-gap:15px;
-}
+.counts{display:flex;flex-wrap:wrap;gap:15px}
 .count{
 flex:1;
 background:white;
@@ -93,13 +105,8 @@ text-align:center;
 border-radius:10px;
 }
 
-/* FORM */
-form{
-display:flex;
-flex-direction:column;
-gap:10px;
-max-width:400px;
-}
+/* FORMS */
+form{display:flex;flex-direction:column;gap:10px;max-width:400px}
 input,textarea{
 padding:10px;
 border:1px solid #ccc;
@@ -110,16 +117,16 @@ padding:10px;
 background:#4b6cb7;
 color:white;
 border:none;
-cursor:pointer;
 border-radius:5px;
+cursor:pointer;
 }
 
 /* REVIEWS */
-.review{
+.review-box{
 background:white;
 padding:15px;
-margin-top:10px;
 border-radius:10px;
+margin-top:10px;
 }
 
 /* FOOTER */
@@ -134,10 +141,7 @@ display:grid;
 grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
 gap:20px;
 }
-.small{
-font-size:13px;
-color:#ccc;
-}
+.small{font-size:13px;color:#ccc}
 </style>
 </head>
 
@@ -146,11 +150,14 @@ color:#ccc;
 <!-- HERO -->
 <header class="hero">
 <div class="logo">Pearl Dreams Safaris</div>
-<nav>
+
+<button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+<div class="menu" id="menu">
 <a href="#dest">Destinations</a>
 <a href="#book">Booking</a>
 <a href="#rev">Reviews</a>
-</nav>
+</div>
 </header>
 
 <!-- SLIDER -->
@@ -163,7 +170,7 @@ color:#ccc;
 </div>
 
 <!-- DESTINATIONS -->
-<section class="section" id="dest">
+<section id="dest" class="section">
 <h2>Top Destinations</h2>
 <div class="cards">
 <div class="card">Uganda - Gorilla Trekking</div>
@@ -184,9 +191,8 @@ color:#ccc;
 </section>
 
 <!-- BOOKING -->
-<section class="section" id="book">
-<h2>Book Your Safari</h2>
-
+<section id="book" class="section">
+<h2>Book Safari</h2>
 <form id="bookingForm">
 <input id="name" placeholder="Full Name" required>
 <input id="email" placeholder="Email" required>
@@ -194,16 +200,20 @@ color:#ccc;
 <input type="date" id="date" required>
 <button type="submit">Submit Booking</button>
 </form>
-
 <p id="msg"></p>
 </section>
 
 <!-- REVIEWS -->
-<section class="section" id="rev">
+<section id="rev" class="section">
 <h2>Reviews</h2>
-<div class="review">★★★★★ Amazing safari experience!</div>
-<div class="review">★★★★★ Best travel service in East Africa!</div>
-<div class="review">★★★★★ Highly recommended!</div>
+
+<div id="reviewList"></div>
+
+<h3>Write a Review</h3>
+<form onsubmit="addReview(event)">
+<input id="reviewText" placeholder="Write your review..." required>
+<button type="submit">Submit Review</button>
+</form>
 </section>
 
 <!-- FOOTER -->
@@ -222,7 +232,7 @@ color:#ccc;
 </div>
 
 <div>
-<h3>Social Media</h3>
+<h3>Social</h3>
 <p>Facebook • Instagram • TikTok</p>
 </div>
 
@@ -241,10 +251,10 @@ color:#ccc;
 <!-- EMAILJS -->
 <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 
-<!-- FIREBASE + LOGIC -->
+<!-- FIREBASE + APP -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 /* 🔥 FIREBASE CONFIG (REPLACE) */
 const firebaseConfig = {
@@ -262,38 +272,60 @@ const db = getFirestore(app);
 /* EMAILJS */
 emailjs.init("YOUR_PUBLIC_KEY");
 
+/* BOOKING */
 document.getElementById("bookingForm").addEventListener("submit", async (e)=>{
 e.preventDefault();
 
-let name = document.getElementById("name").value;
-let email = document.getElementById("email").value;
-let destination = document.getElementById("destination").value;
-let date = document.getElementById("date").value;
+let name=document.getElementById("name").value;
+let email=document.getElementById("email").value;
+let destination=document.getElementById("destination").value;
+let date=document.getElementById("date").value;
 
 try{
-/* SAVE TO FIREBASE */
 await addDoc(collection(db,"bookings"),{
 name,email,destination,date,time:new Date()
 });
 
-/* SEND EMAIL */
 await emailjs.send("YOUR_SERVICE_ID","YOUR_TEMPLATE_ID",{
 name,email,destination,date
 });
 
-document.getElementById("msg").innerText =
-"Booking successful! Check your email.";
-
+document.getElementById("msg").innerText="Booking successful!";
 }catch(err){
-document.getElementById("msg").innerText =
-"Error sending booking.";
-console.log(err);
+document.getElementById("msg").innerText="Error sending booking.";
 }
+});
+
+/* REVIEWS SAVE TO FIREBASE */
+window.addReview = async function(e){
+e.preventDefault();
+
+let text=document.getElementById("reviewText").value;
+
+await addDoc(collection(db,"reviews"),{
+text,time:new Date()
+});
+
+document.getElementById("reviewText").value="";
+}
+
+/* LOAD REVIEWS LIVE */
+onSnapshot(collection(db,"reviews"),(snap)=>{
+let html="";
+snap.forEach(doc=>{
+html+=`<div class="review-box">★★★★★ ${doc.data().text}</div>`;
+});
+document.getElementById("reviewList").innerHTML=html;
 });
 </script>
 
-<!-- SLIDER SCRIPT -->
+<!-- SLIDER -->
 <script>
+function toggleMenu(){
+const menu=document.getElementById("menu");
+menu.style.display = menu.style.display==="flex"?"none":"flex";
+}
+
 const captions=[
 "Explore Uganda Gorilla Trekking",
 "Discover Kenya Masai Mara",
@@ -301,21 +333,13 @@ const captions=[
 "Visit Rwanda Volcanoes"
 ];
 
-let index=0;
-
-function slideShow(){
-const images=document.querySelectorAll(".slider img");
-const caption=document.getElementById("caption");
-
-images.forEach(img=>img.classList.remove("active"));
-
-images[index].classList.add("active");
-caption.innerText=captions[index];
-
-index=(index+1)%images.length;
-}
-
-setInterval(slideShow,4000);
+let i=0;
+setInterval(()=>{
+document.querySelectorAll(".slider img").forEach(img=>img.classList.remove("active"));
+document.querySelectorAll(".slider img")[i].classList.add("active");
+document.getElementById("caption").innerText=captions[i];
+i=(i+1)%captions.length;
+},4000);
 </script>
 
 </body>
