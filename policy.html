@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Policy – Viatrix Tours & Travel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #1B7A3D;
+      --green-dark: #0F4D26;
+      --orange: #F57C00;
+      --orange-dark: #E65100;
+      --black: #0D0D0D;
+      --black-soft: #1A1A1A;
+      --white: #FFFFFF;
+      --white-soft: #F8F8F8;
+      --gray: #E8E8E8;
+      --gray-dark: #666666;
+      --shadow: 0 10px 40px rgba(0,0,0,0.08);
+      --radius: 16px;
+      --transition: all 0.3s ease;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--black);
+      background: var(--white-soft);
+      line-height: 1.7;
+    }
+    a { text-decoration: none; color: inherit; transition: var(--transition); }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+
+    header {
+      background: var(--white);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 0; gap: 16px; flex-wrap: wrap;
+      max-width: 1100px; margin: 0 auto; padding-left: 20px; padding-right: 20px;
+    }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo-img {
+      width: 56px; height: 56px; object-fit: contain;
+      border: none; background: transparent;
+    }
+    .logo-text h1 { font-size: 1.1rem; font-weight: 700; line-height: 1.2; }
+    .logo-text span { font-size: 0.72rem; color: var(--green); font-weight: 500; }
+    .nav-links { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
+    .nav-links a { font-size: 0.88rem; font-weight: 500; color: var(--black-soft); }
+    .nav-links a:hover { color: var(--green); }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 24px; border-radius: 50px; font-weight: 600;
+      font-size: 0.88rem; border: none; cursor: pointer;
+      transition: var(--transition); font-family: inherit;
+    }
+    .btn-orange { background: var(--orange); color: var(--white); }
+    .btn-orange:hover { background: var(--orange-dark); transform: translateY(-2px); }
+    .btn-green { background: var(--green); color: var(--white); }
+    .btn-green:hover { background: var(--green-dark); }
+
+    .page-hero {
+      background: linear-gradient(135deg, var(--green-dark), var(--green));
+      color: var(--white); padding: 50px 0 55px; text-align: center;
+    }
+    .page-hero .badge {
+      display: inline-block; background: var(--orange);
+      padding: 5px 16px; border-radius: 50px; font-size: 0.78rem;
+      font-weight: 600; letter-spacing: 0.5px; margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+    .page-hero h2 { font-size: clamp(1.7rem, 4vw, 2.3rem); font-weight: 800; margin-bottom: 10px; }
+    .page-hero p { max-width: 540px; margin: 0 auto; opacity: 0.9; font-weight: 300; font-size: 0.95rem; }
+
+    .policy-nav {
+      background: var(--white); padding: 16px 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      position: sticky; top: 72px; z-index: 90;
+    }
+    .policy-nav ul {
+      list-style: none; display: flex; flex-wrap: wrap;
+      gap: 8px; justify-content: center;
+    }
+    .policy-nav a {
+      padding: 8px 16px; border-radius: 50px; font-size: 0.82rem;
+      font-weight: 600; border: 2px solid var(--gray); color: var(--black-soft);
+    }
+    .policy-nav a:hover, .policy-nav a.active {
+      border-color: var(--green); color: var(--green); background: rgba(27,122,61,0.05);
+    }
+
+    .content { padding: 45px 0 70px; }
+    .policy-card {
+      background: var(--white); border-radius: var(--radius);
+      padding: 36px 32px; margin-bottom: 28px;
+      box-shadow: var(--shadow); border: 1px solid var(--gray);
+    }
+    .policy-card h3 {
+      font-size: 1.25rem; font-weight: 700; margin-bottom: 16px;
+      color: var(--black); display: flex; align-items: center; gap: 12px;
+    }
+    .policy-card h3 .icon {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--green), var(--green-dark));
+      color: var(--white); display: flex; align-items: center;
+      justify-content: center; font-size: 1.15rem; flex-shrink: 0;
+    }
+    .policy-card h4 {
+      font-size: 1rem; font-weight: 600; margin: 22px 0 10px;
+      color: var(--green-dark);
+    }
+    .policy-card p {
+      font-size: 0.92rem; color: var(--black-soft); margin-bottom: 12px;
+    }
+    .policy-card ul, .policy-card ol {
+      margin: 12px 0 16px 0; padding-left: 22px;
+    }
+    .policy-card li {
+      font-size: 0.92rem; color: var(--black-soft); margin-bottom: 8px;
+    }
+    .policy-card li strong { color: var(--black); }
+
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px; margin: 18px 0 22px;
+    }
+    .method-badge {
+      background: var(--white-soft); border: 2px solid var(--gray);
+      border-radius: 12px; padding: 14px 12px; text-align: center;
+      font-weight: 600; font-size: 0.85rem; transition: var(--transition);
+    }
+    .method-badge:hover { border-color: var(--orange); }
+    .method-badge span { display: block; font-size: 1.4rem; margin-bottom: 6px; }
+
+    .highlight-box {
+      background: rgba(27,122,61,0.06);
+      border-left: 4px solid var(--green);
+      padding: 16px 18px; border-radius: 0 10px 10px 0;
+      margin: 18px 0; font-size: 0.9rem;
+    }
+    .highlight-box.orange {
+      background: rgba(245,124,0,0.08);
+      border-left-color: var(--orange);
+    }
+    .table-wrap { overflow-x: auto; margin: 18px 0; }
+    table {
+      width: 100%; border-collapse: collapse; font-size: 0.9rem;
+    }
+    th, td {
+      padding: 12px 14px; text-align: left;
+      border-bottom: 1px solid var(--gray);
+    }
+    th {
+      background: var(--green); color: var(--white);
+      font-weight: 600;
+    }
+    tr:hover td { background: rgba(27,122,61,0.03); }
+
+    .effective {
+      text-align: center; font-size: 0.85rem; color: var(--gray-dark);
+      margin-bottom: 30px;
+    }
+
+    footer {
+      background: var(--black); color: var(--white);
+      padding: 28px 0; text-align: center; font-size: 0.85rem;
+    }
+    footer a { color: var(--orange); }
+    footer a:hover { color: #FF9800; }
+
+    @media (max-width: 640px) {
+      .policy-card { padding: 24px 18px; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <img src="../531196AE-608A-43EF-9978-CADB0CDABB36.png" alt="Viatrix" class="logo-img" onerror="this.style.display='none'">
+        <div class="logo-text">
+          <h1>Viatrix Tours & Travel</h1>
+          <span>Adventure Awaits</span>
+        </div>
+      </a>
+      <div class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="../itineraries.html">Itineraries</a>
+        <a href="../book.html">Book Now</a>
+        <a href="../gallery.html">Gallery</a>
+      </div>
+      <a href="../book.html" class="btn btn-orange">Book a Tour</a>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="container">
+      <span class="badge">Official Company Policy</span>
+      <h2>Payment Policy</h2>
+      <p>Transparent, secure, and fair payment terms for all bookings with Viatrix Tours & Travel Co. Ltd.</p>
+    </div>
+  </section>
+
+  <nav class="policy-nav">
+    <div class="container">
+      <ul>
+        <li><a href="#methods">Payment Methods</a></li>
+        <li><a href="#deposits">Deposits & Balance</a></li>
+        <li><a href="#cancellation">Cancellation</a></li>
+        <li><a href="#refunds">Refunds</a></li>
+        <li><a href="#currency">Currency & Fees</a></li>
+        <li><a href="#security">Security</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="container">
+
+      <p class="effective">
+        <strong>Viatrix Tours & Travel Co. Ltd.</strong> · Effective date: 1 January 2026 · Last updated: August 2026
+      </p>
+
+      <!-- 1. METHODS -->
+      <article class="policy-card" id="methods">
+        <h3><span class="icon">💳</span> 1. Accepted Payment Methods</h3>
+        <p>
+          Viatrix Tours & Travel Co. Ltd. (“the Company”) accepts the following payment methods for tour bookings,
+          deposits, and final balances. All payments must be made in the name of the Company or as instructed on the official invoice.
+        </p>
+        <div class="method-grid">
+          <div class="method-badge"><span>📱</span> Mobile Money</div>
+          <div class="method-badge"><span>🏦</span> Bank Transfer</div>
+          <div class="method-badge"><span>💳</span> Visa / Mastercard</div>
+          <div class="method-badge"><span>🅿️</span> PayPal</span></div>
+          <div class="method-badge"><span>💵</span> Cash (on arrival)</div>
+        </div>
+        <h4>1.1 Mobile Money</h4>
+        <p>
+          Payments via MTN Mobile Money, Airtel Money, or equivalent local mobile money services are accepted.
+          The client must use the official Company mobile money number provided on the booking invoice only.
+          A confirmation SMS or transaction ID must be retained and shared with the Company.
+        </p>
+        <h4>1.2 Bank Transfer</h4>
+        <p>
+          Wire transfers and local bank deposits are accepted. Bank details are provided on the official invoice.
+          The client is responsible for any intermediary or bank charges so that the Company receives the full amount due.
+        </p>
+        <h4>1.3 Card Payments</h4>
+        <p>
+          Visa and Mastercard payments may be processed through secure third-party payment gateways.
+          Card payments are subject to the terms of the payment processor and applicable card network rules.
+        </p>
+        <h4>1.4 PayPal</h4>
+        <p>
+          Where offered, PayPal payments must be sent to the official Company PayPal account stated on the invoice.
+          Friends-and-family or incorrect account payments may not be recognised until verified.
+        </p>
+        <h4>1.5 Cash on Arrival</h4>
+        <p>
+          Cash payment of the remaining balance may be accepted on the first day of the tour, subject to prior written agreement.
+          The mandatory deposit must still be paid in advance by an electronic method listed above.
+        </p>
+      </article>
+
+      <!-- 2. DEPOSITS -->
+      <article class="policy-card" id="deposits">
+        <h3><span class="icon">📋</span> 2. Deposits, Invoices & Balance Payment</h3>
+        <div class="highlight-box">
+          <strong>Standard deposit:</strong> A non-refundable deposit of <strong>30% of the total tour price</strong> is required to confirm any booking, unless a different amount is stated in writing on the invoice.
+        </div>
+        <h4>2.1 Booking confirmation</h4>
+        <ul>
+          <li>A booking is confirmed only after the Company has received the required deposit and issued a written confirmation (email or official document).</li>
+          <li>Until the deposit is received, prices and availability are not guaranteed.</li>
+        </ul>
+        <h4>2.2 Balance payment</h4>
+        <ul>
+          <li>The remaining balance is due no later than <strong>14 days before the tour start date</strong>.</li>
+          <li>For bookings made within 14 days of departure, full payment is required at the time of booking.</li>
+          <li>Failure to pay the balance by the due date may result in cancellation of the booking and forfeiture of the deposit, in accordance with the cancellation policy below.</li>
+        </ul>
+        <h4>2.3 Invoices & receipts</h4>
+        <p>
+          An official invoice will be issued for every confirmed booking. A receipt or payment confirmation will be issued upon successful payment.
+          Clients should keep all invoices and receipts for their records.
+        </p>
+      </article>
+
+      <!-- 3. CANCELLATION -->
+      <article class="policy-card" id="cancellation">
+        <h3><span class="icon">🗓️</span> 3. Cancellation by the Client</h3>
+        <p>
+          All cancellation requests must be submitted in writing (email to
+          <a href="mailto:viatrixtoursandtravelco@gmail.com" style="color:var(--green);font-weight:600;">viatrixtoursandtravelco@gmail.com</a>
+          or WhatsApp to the official Company numbers). The date the Company receives the written notice is the effective cancellation date.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Notice period before tour start</th>
+                <th>Refund of amounts paid</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>14 days or more</td>
+                <td>Full refund of amounts paid, less any non-recoverable third-party costs (e.g. gorilla permits already purchased)</td>
+              </tr>
+              <tr>
+                <td>7 – 13 days</td>
+                <td>50% of the total tour price is retained by the Company; remainder refunded (subject to third-party costs)</td>
+              </tr>
+              <tr>
+                <td>Less than 7 days</td>
+                <td>No refund. Full tour price is retained</td>
+              </tr>
+              <tr>
+                <td>No-show</td>
+                <td>No refund</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="highlight-box orange">
+          <strong>Important:</strong> Gorilla permits, park fees, and certain third-party bookings are often non-refundable once purchased.
+          These costs will be deducted from any refund due, regardless of the notice period.
+        </div>
+        <h4>3.1 Rescheduling</h4>
+        <p>
+          Clients may request to reschedule a tour at least 7 days before the original start date, subject to availability and written approval by the Company.
+          One complimentary reschedule may be granted; further changes may incur an administration fee.
+        </p>
+      </article>
+
+      <!-- 4. REFUNDS -->
+      <article class="policy-card" id="refunds">
+        <h3><span class="icon">↩️</span> 4. Refunds</h3>
+        <h4>4.1 Processing time</h4>
+        <p>
+          Approved refunds will be processed within <strong>14 business days</strong> of written approval.
+          Refunds are returned via the original payment method where possible, or by bank transfer / mobile money as agreed with the client.
+        </p>
+        <h4>4.2 Cancellation by the Company</h4>
+        <p>
+          If the Company cancels a tour for reasons within its control (other than force majeure), the client is entitled to a full refund of all amounts paid, or the option to transfer to an alternative date or itinerary of comparable value.
+        </p>
+        <h4>4.3 Force majeure</h4>
+        <p>
+          The Company is not liable for failure to perform obligations due to circumstances beyond its reasonable control, including but not limited to:
+          natural disasters, war, terrorism, epidemics, government restrictions, park closures, or severe weather.
+          In such cases, the Company will offer a credit toward a future booking or a partial refund after deducting non-recoverable costs, at its reasonable discretion.
+        </p>
+      </article>
+
+      <!-- 5. CURRENCY -->
+      <article class="policy-card" id="currency">
+        <h3><span class="icon">💱</span> 5. Currency, Pricing & Fees</h3>
+        <ul>
+          <li>Tour prices are typically quoted in <strong>United States Dollars (USD)</strong> unless otherwise stated on the invoice.</li>
+          <li>Payments in other currencies may be accepted at the prevailing exchange rate determined by the Company on the date of payment.</li>
+          <li>The client is responsible for all bank charges, currency conversion fees, and intermediary fees so that the Company receives the full invoiced amount.</li>
+          <li>Prices are subject to change until a booking is confirmed with a deposit. Confirmed prices will not be increased except where third-party costs (e.g. park fees, permit fees) increase after confirmation; in such cases the Company will notify the client promptly.</li>
+        </ul>
+      </article>
+
+      <!-- 6. SECURITY -->
+      <article class="policy-card" id="security">
+        <h3><span class="icon">🔒</span> 6. Payment Security & Fraud Prevention</h3>
+        <ul>
+          <li>The Company never requests payment to personal accounts. All payments must follow the details on the official invoice issued by Viatrix Tours & Travel Co. Ltd.</li>
+          <li>Clients should verify payment instructions by contacting the Company on the published phone numbers or email before transferring large sums.</li>
+          <li>Card and online payments are processed through reputable, encrypted payment providers. The Company does not store full card numbers on its own systems.</li>
+          <li>If a client suspects fraudulent use of the Company name, they should contact us immediately and report the matter to their bank or local authorities.</li>
+        </ul>
+        <div class="highlight-box">
+          <strong>Official contacts for payment queries:</strong><br>
+          Email: <a href="mailto:viatrixtoursandtravelco@gmail.com" style="color:var(--green);font-weight:600;">viatrixtoursandtravelco@gmail.com</a><br>
+          Tel / WhatsApp: <a href="tel:+256777271601" style="color:var(--green);font-weight:600;">+256 777 271 601</a> ·
+          <a href="tel:+4542520308" style="color:var(--green);font-weight:600;">+45 4252 0308</a>
+        </div>
+      </article>
+
+      <!-- 7. GENERAL -->
+      <article class="policy-card" id="general">
+        <h3><span class="icon">⚖️</span> 7. General Terms</h3>
+        <ul>
+          <li>By paying a deposit or confirming a booking, the client acknowledges that they have read, understood, and agreed to this Payment Policy and the Company’s general Terms of Service.</li>
+          <li>This policy applies to all leisure and adventure tour bookings unless a separate written agreement states otherwise.</li>
+          <li>The Company reserves the right to update this policy. The version published on the official website on the date of booking shall apply to that booking.</li>
+          <li>Travel insurance covering cancellation, medical emergencies, and personal belongings is strongly recommended for all clients.</li>
+          <li>This policy is governed by the laws of the Republic of Uganda. Disputes shall first be addressed amicably; failing which, they may be submitted to the competent courts of Uganda.</li>
+        </ul>
+      </article>
+
+      <!-- 8. CONTACT -->
+      <article class="policy-card" id="contact">
+        <h3><span class="icon">📞</span> 8. Questions About Payments</h3>
+        <p>
+          For invoices, payment confirmation, refunds, or any payment-related enquiry, please contact:
+        </p>
+        <ul>
+          <li><strong>Company:</strong> Viatrix Tours & Travel Co. Ltd.</li>
+          <li><strong>Email:</strong> <a href="mailto:viatrixtoursandtravelco@gmail.com" style="color:var(--green);font-weight:600;">viatrixtoursandtravelco@gmail.com</a></li>
+          <li><strong>Uganda:</strong> <a href="tel:+256777271601" style="color:var(--green);font-weight:600;">+256 777 271 601</a></li>
+          <li><strong>International:</strong> <a href="tel:+4542520308" style="color:var(--green);font-weight:600;">+45 4252 0308</a></li>
+          <li><strong>Location:</strong> Entebbe Kitala, Uganda</li>
+        </ul>
+        <p style="margin-top:20px;">
+          <a href="../book.html" class="btn btn-orange">Book a Tour</a>
+          <a href="../index.html" class="btn btn-green" style="margin-left:10px;">Back to Home</a>
+        </p>
+      </article>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>
+        &copy; 2026 Viatrix Tours & Travel Co. Ltd. ·
+        <a href="../index.html">Home</a> ·
+        <a href="../book.html">Book Now</a> ·
+        <a href="mailto:viatrixtoursandtravelco@gmail.com">viatrixtoursandtravelco@gmail.com</a>
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>
