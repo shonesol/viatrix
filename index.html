@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viatrix Tours & Travel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #1B7A3D;
+      --green-dark: #0F4D26;
+      --green-light: #2E9B50;
+      --orange: #F57C00;
+      --orange-dark: #E65100;
+      --orange-light: #FF9800;
+      --black: #0D0D0D;
+      --black-soft: #1A1A1A;
+      --white: #FFFFFF;
+      --white-soft: #F8F8F8;
+      --gray: #F0F0F0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--black);
+      background: var(--white);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
+    img { max-width: 100%; display: block; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+    /* ========== TOP BAR ========== */
+    .top-bar {
+      background: var(--black);
+      color: var(--white);
+      padding: 10px 0;
+      font-size: 0.85rem;
+    }
+    .top-bar .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .top-bar-left { display: flex; align-items: center; gap: 25px; }
+    .top-bar-item { display: flex; align-items: center; gap: 8px; }
+    .top-bar-item svg { width: 16px; height: 16px; fill: var(--orange); }
+    .top-bar a:hover { color: var(--orange); }
+
+    /* ========== HEADER ========== */
+    header {
+      background: var(--white);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 0;
+      gap: 20px;
+    }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo-icon {
+      width: 50px; height: 50px;
+      background: linear-gradient(135deg, var(--green), var(--green-dark));
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--white); font-weight: 800; font-size: 1.4rem;
+      border: 3px solid var(--orange);
+    }
+    .logo-text h1 { font-size: 1.35rem; font-weight: 700; color: var(--black); line-height: 1.2; }
+    .logo-text span { font-size: 0.75rem; color: var(--green); font-weight: 500; letter-spacing: 0.5px; }
+    nav ul { display: flex; list-style: none; gap: 28px; align-items: center; }
+    nav a {
+      font-weight: 500; font-size: 0.95rem; color: var(--black-soft);
+      position: relative;
+    }
+    nav a::after {
+      content: ''; position: absolute; bottom: -5px; left: 0;
+      width: 0; height: 2px; background: var(--orange); transition: width 0.3s ease;
+    }
+    nav a:hover, nav a.active { color: var(--green); }
+    nav a:hover::after, nav a.active::after { width: 100%; }
+    .header-cta { display: flex; align-items: center; gap: 15px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 28px; border-radius: 50px; font-weight: 600; font-size: 0.9rem;
+      border: none; cursor: pointer; transition: all 0.3s ease;
+    }
+    .btn-orange { background: var(--orange); color: var(--white); }
+    .btn-orange:hover { background: var(--orange-dark); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(245,124,0,0.35); }
+    .btn-green { background: var(--green); color: var(--white); }
+    .btn-green:hover { background: var(--green-dark); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(27,122,61,0.35); }
+    .btn-outline { background: transparent; border: 2px solid var(--white); color: var(--white); }
+    .btn-outline:hover { background: var(--white); color: var(--green); }
+    .btn-outline-dark { background: transparent; border: 2px solid var(--green); color: var(--green); }
+    .btn-outline-dark:hover { background: var(--green); color: var(--white); }
+    .mobile-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+    .mobile-toggle span { display: block; width: 25px; height: 3px; background: var(--black); margin: 5px 0; border-radius: 2px; }
+
+    /* ========== HERO SLIDER ========== */
+    .hero {
+      position: relative;
+      min-height: 90vh;
+      overflow: hidden;
+    }
+    .hero-slides {
+      position: relative;
+      width: 100%;
+      height: 90vh;
+    }
+    .hero-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 1s ease;
+      display: flex;
+      align-items: center;
+      background-size: cover;
+      background-position: center;
+    }
+    .hero-slide.active { opacity: 1; z-index: 1; }
+    .hero-slide::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(13,13,13,0.75), rgba(27,122,61,0.55));
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 700px;
+      padding: 40px 0;
+      color: var(--white);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--orange);
+      color: var(--white);
+      padding: 6px 18px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .hero h2 {
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .hero h2 span { color: var(--orange); }
+    .hero p {
+      font-size: 1.1rem;
+      opacity: 0.95;
+      margin-bottom: 30px;
+      max-width: 520px;
+      font-weight: 300;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 35px; }
+    .hero-info { display: flex; flex-wrap: wrap; gap: 30px; align-items: center; }
+    .hero-info-item { display: flex; align-items: center; gap: 10px; }
+    .hero-info-item svg { width: 22px; height: 22px; fill: var(--orange); }
+    .hero-info-item strong { display: block; font-size: 0.8rem; opacity: 0.8; font-weight: 400; }
+    .hero-info-item span { font-weight: 600; font-size: 1rem; }
+
+    /* Hero controls */
+    .hero-controls {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+    .hero-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .hero-dot.active { background: var(--orange); transform: scale(1.2); }
+    .hero-arrows {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .hero-arrow {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: 2px solid rgba(255,255,255,0.3);
+      color: var(--white);
+      font-size: 1.4rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: all;
+      transition: all 0.3s;
+    }
+    .hero-arrow:hover { background: var(--orange); border-color: var(--orange); }
+
+    /* Search box */
+    .search-box {
+      position: absolute;
+      bottom: 40px;
+      right: 5%;
+      background: var(--white);
+      padding: 12px 20px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      z-index: 10;
+    }
+    .search-box input {
+      border: none; outline: none;
+      font-family: inherit; font-size: 0.95rem;
+      width: 180px; color: var(--black);
+    }
+    .search-box button {
+      background: var(--orange); border: none;
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background 0.3s;
+    }
+    .search-box button:hover { background: var(--orange-dark); }
+    .search-box button svg { width: 18px; height: 18px; fill: var(--white); }
+
+    /* ========== SECTIONS ========== */
+    section { padding: 90px 0; }
+    .section-header { text-align: center; margin-bottom: 55px; }
+    .section-label {
+      display: inline-block;
+      color: var(--orange);
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .section-header h2 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 15px;
+    }
+    .section-header p {
+      max-width: 600px;
+      margin: 0 auto;
+      color: var(--black-soft);
+      opacity: 0.8;
+    }
+
+    /* ========== ACTIVITIES ========== */
+    .activities { background: var(--white-soft); }
+    .activities-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+    .activity-card {
+      background: var(--white);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+      transition: all 0.35s ease;
+      border: 1px solid transparent;
+    }
+    .activity-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+      border-color: var(--orange);
+    }
+    .activity-img { height: 200px; overflow: hidden; position: relative; }
+    .activity-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .activity-card:hover .activity-img img { transform: scale(1.08); }
+    .activity-rating {
+      position: absolute; top: 15px; right: 15px;
+      background: var(--green); color: var(--white);
+      padding: 5px 12px; border-radius: 50px;
+      font-size: 0.8rem; font-weight: 600;
+    }
+    .activity-body { padding: 25px; }
+    .activity-price { color: var(--orange); font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; }
+    .activity-body h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; }
+    .activity-body p { font-size: 0.9rem; color: var(--black-soft); opacity: 0.75; margin-bottom: 18px; }
+    .activity-body .btn { padding: 10px 22px; font-size: 0.85rem; }
+
+    /* ========== ABOUT ========== */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .about-img { position: relative; border-radius: 20px; overflow: hidden; }
+    .about-img img { width: 100%; height: 450px; object-fit: cover; border-radius: 20px; }
+    .about-img::before {
+      content: '';
+      position: absolute; bottom: -20px; right: -20px;
+      width: 60%; height: 60%;
+      border: 4px solid var(--orange);
+      border-radius: 20px; z-index: -1;
+    }
+    .about-content .section-label { text-align: left; }
+    .about-content h2 {
+      font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+      font-weight: 700; margin-bottom: 20px;
+    }
+    .about-content p { margin-bottom: 18px; color: var(--black-soft); opacity: 0.85; }
+    .about-stats { display: flex; gap: 35px; margin: 30px 0; flex-wrap: wrap; }
+    .stat-item h4 { font-size: 2rem; font-weight: 800; color: var(--green); line-height: 1; }
+    .stat-item span { font-size: 0.85rem; color: var(--black-soft); opacity: 0.7; }
+
+    /* ========== STAFF SLIDER ========== */
+    .staff { background: var(--white-soft); }
+    .staff-slider-wrapper {
+      position: relative;
+      overflow: hidden;
+    }
+    .staff-track {
+      display: flex;
+      transition: transform 0.5s ease;
+      gap: 25px;
+    }
+    .staff-card {
+      min-width: calc(25% - 19px);
+      background: var(--white);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+      text-align: center;
+      transition: all 0.3s;
+      border: 1px solid transparent;
+    }
+    .staff-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--orange);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    }
+    .staff-img {
+      height: 220px;
+      overflow: hidden;
+      background: var(--green);
+    }
+    .staff-img img { width: 100%; height: 100%; object-fit: cover; }
+    .staff-body { padding: 22px 18px; }
+    .staff-body h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 4px; }
+    .staff-role { color: var(--orange); font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; }
+    .staff-body p { font-size: 0.85rem; color: var(--black-soft); opacity: 0.75; }
+    .staff-nav {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 35px;
+    }
+    .staff-nav button {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--green);
+      background: transparent;
+      color: var(--green);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .staff-nav button:hover { background: var(--green); color: var(--white); }
+
+    /* ========== REVIEWS SLIDER ========== */
+    .testimonials { background: var(--black); color: var(--white); }
+    .testimonials .section-label { color: var(--orange); }
+    .testimonials .section-header h2 { color: var(--white); }
+    .testimonials .section-header p { color: rgba(255,255,255,0.7); }
+    .reviews-slider-wrapper { position: relative; overflow: hidden; }
+    .reviews-track {
+      display: flex;
+      transition: transform 0.5s ease;
+      gap: 25px;
+    }
+    .testimonial-card {
+      min-width: calc(33.333% - 17px);
+      background: var(--black-soft);
+      border-radius: 16px;
+      padding: 35px 30px;
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: all 0.3s;
+    }
+    .testimonial-card:hover { border-color: var(--orange); }
+    .testimonial-stars { color: var(--orange); font-size: 1.1rem; margin-bottom: 18px; letter-spacing: 3px; }
+    .testimonial-card p {
+      font-size: 0.95rem; opacity: 0.9; margin-bottom: 25px;
+      font-style: italic; line-height: 1.7;
+    }
+    .testimonial-author { display: flex; align-items: center; gap: 15px; }
+    .author-avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--green);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; color: var(--white); font-size: 1.1rem;
+    }
+    .author-info h5 { font-size: 1rem; font-weight: 600; }
+    .author-info span { font-size: 0.8rem; opacity: 0.6; }
+    .reviews-nav {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 35px;
+    }
+    .reviews-nav button {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--orange);
+      background: transparent;
+      color: var(--orange);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .reviews-nav button:hover { background: var(--orange); color: var(--white); }
+
+    /* ========== USER REVIEW FORM ========== */
+    .submit-review { background: var(--white-soft); }
+    .review-form-card {
+      max-width: 700px;
+      margin: 0 auto;
+      background: var(--white);
+      border-radius: 20px;
+      padding: 45px 40px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+      border: 1px solid var(--gray);
+    }
+    .review-form-card h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .review-form-card > p {
+      text-align: center;
+      color: var(--black-soft);
+      opacity: 0.75;
+      margin-bottom: 30px;
+      font-size: 0.95rem;
+    }
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      color: var(--black);
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid var(--gray);
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: border-color 0.3s;
+      background: var(--white);
+      color: var(--black);
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--green);
+    }
+    .form-group textarea { min-height: 120px; resize: vertical; }
+    .rating-select {
+      display: flex;
+      gap: 8px;
+      font-size: 1.8rem;
+    }
+    .rating-select span {
+      cursor: pointer;
+      color: var(--gray);
+      transition: color 0.2s;
+    }
+    .rating-select span.active,
+    .rating-select span:hover { color: var(--orange); }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .form-submit { text-align: center; margin-top: 10px; }
+    .form-message {
+      display: none;
+      text-align: center;
+      padding: 14px;
+      border-radius: 10px;
+      margin-top: 20px;
+      font-weight: 500;
+    }
+    .form-message.success {
+      display: block;
+      background: rgba(27,122,61,0.1);
+      color: var(--green);
+      border: 1px solid var(--green);
+    }
+
+    /* ========== TOURS ========== */
+    .tours-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 25px;
+    }
+    .tour-card {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      height: 320px;
+      cursor: pointer;
+    }
+    .tour-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .tour-card:hover img { transform: scale(1.1); }
+    .tour-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(13,13,13,0.9) 0%, transparent 60%);
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 25px; color: var(--white);
+    }
+    .tour-overlay h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 6px; }
+    .tour-overlay .price { color: var(--orange); font-weight: 600; font-size: 0.95rem; }
+
+    /* ========== PAYMENT & POLICIES ========== */
+    .payment-policies { background: var(--white-soft); }
+    .pp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+    .pp-card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 35px 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+      border: 1px solid var(--gray);
+    }
+    .pp-card h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .pp-card h3 span {
+      width: 40px; height: 40px;
+      background: var(--green);
+      color: var(--white);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+    .payment-methods {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+    .payment-badge {
+      background: var(--white-soft);
+      border: 2px solid var(--gray);
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+    }
+    .payment-badge:hover { border-color: var(--orange); background: var(--white); }
+    .payment-badge svg { width: 22px; height: 22px; }
+    .pp-card ul { list-style: none; }
+    .pp-card li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--gray);
+      font-size: 0.9rem;
+      color: var(--black-soft);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .pp-card li:last-child { border-bottom: none; }
+    .pp-card li::before {
+      content: '✓';
+      color: var(--green);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ========== CTA ========== */
+    .cta {
+      background: linear-gradient(135deg, var(--green-dark), var(--green));
+      color: var(--white);
+      text-align: center;
+      padding: 80px 20px;
+    }
+    .cta h2 { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: 15px; }
+    .cta p { max-width: 550px; margin: 0 auto 30px; opacity: 0.9; }
+    .cta .btn-orange { font-size: 1rem; padding: 14px 36px; }
+
+    /* ========== FOOTER ========== */
+    footer {
+      background: var(--black);
+      color: var(--white);
+      padding: 70px 0 30px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+      gap: 40px;
+      margin-bottom: 50px;
+    }
+    .footer-brand .logo-text h1 { color: var(--white); font-size: 1.3rem; }
+    .footer-brand p { margin: 18px 0; opacity: 0.7; font-size: 0.9rem; line-height: 1.7; }
+    .socials { display: flex; gap: 12px; flex-wrap: wrap; }
+    .socials a {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--black-soft);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s;
+    }
+    .socials a:hover { background: var(--orange); transform: translateY(-3px); }
+    .socials a.whatsapp:hover { background: #25D366; }
+    .socials svg { width: 18px; height: 18px; fill: var(--white); }
+    .footer-col h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 22px; color: var(--orange); }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 12px; }
+    .footer-col a { opacity: 0.7; font-size: 0.9rem; }
+    .footer-col a:hover { opacity: 1; color: var(--orange); }
+    .footer-contact li {
+      display: flex; align-items: flex-start; gap: 12px;
+      margin-bottom: 16px; opacity: 0.8; font-size: 0.9rem;
+    }
+    .footer-contact svg { width: 18px; height: 18px; fill: var(--orange); flex-shrink: 0; margin-top: 3px; }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      font-size: 0.85rem;
+      opacity: 0.6;
+    }
+    .footer-bottom a { opacity: 1; margin-left: 15px; }
+    .footer-bottom a:hover { color: var(--orange); }
+
+    /* WhatsApp floating button */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      width: 60px; height: 60px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 20px rgba(37,211,102,0.4);
+      z-index: 999;
+      transition: all 0.3s;
+    }
+    .whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 8px 25px rgba(37,211,102,0.5); }
+    .whatsapp-float svg { width: 32px; height: 32px; fill: var(--white); }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 1100px) {
+      .staff-card { min-width: calc(33.333% - 17px); }
+      .testimonial-card { min-width: calc(50% - 13px); }
+    }
+    @media (max-width: 992px) {
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .search-box { display: none; }
+      .pp-grid { grid-template-columns: 1fr; }
+      .staff-card { min-width: calc(50% - 13px); }
+    }
+    @media (max-width: 768px) {
+      .top-bar { display: none; }
+      nav {
+        display: none;
+        position: absolute; top: 100%; left: 0; right: 0;
+        background: var(--white);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        padding: 20px;
+      }
+      nav.open { display: block; }
+      nav ul { flex-direction: column; gap: 15px; align-items: flex-start; }
+      .mobile-toggle { display: block; }
+      .header-cta .btn { display: none; }
+      .hero { min-height: 80vh; }
+      .hero-slides { height: 80vh; }
+      .hero-content { text-align: center; margin: 0 auto; }
+      .hero-actions { justify-content: center; }
+      .hero-info { justify-content: center; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .form-row { grid-template-columns: 1fr; }
+      .staff-card, .testimonial-card { min-width: 100%; }
+      .review-form-card { padding: 30px 20px; }
+    }
+    @media (max-width: 480px) {
+      .hero h2 { font-size: 1.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-left">
+        <div class="top-bar-item">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          <span>Entebbe Kitala, Uganda</span>
+        </div>
+        <div class="top-bar-item">
+          <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+          <a href="tel:+180012451210">+1800-1245-1210</a>
+        </div>
+      </div>
+      <div class="top-bar-item">
+        <span>Open daily 8:00 AM – 6:00 PM</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="container header-inner">
+      <a href="#" class="logo">
+        <div class="logo-icon">VT</div>
+        <div class="logo-text">
+          <h1>Viatrix Tours & Travel</h1>
+          <span>Adventure Awaits</span>
+        </div>
+      </a>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="#home" class="active">Home</a></li>
+          <li><a href="#activities">Activities</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#staff">Our Team</a></li>
+          <li><a href="#tours">Tours</a></li>
+          <li><a href="#testimonials">Reviews</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="header-cta">
+        <a href="#contact" class="btn btn-orange">Book Now</a>
+        <button class="mobile-toggle" id="menuToggle" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== HERO SLIDER ========== -->
+  <section class="hero" id="home">
+    <div class="hero-slides">
+      <!-- Slide 1 -->
+      <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1516426122078-c23e76319801?w=1600&q=80')">
+        <div class="container">
+          <div class="hero-content">
+            <span class="hero-badge">Discover East Africa</span>
+            <h2>Adventure Tour and <span>Fun Filled</span> Trekking</h2>
+            <p>Let's make your best trip ever! Explore the beauty of Uganda with expert-guided tours, wildlife adventures, and unforgettable experiences.</p>
+            <div class="hero-actions">
+              <a href="#activities" class="btn btn-orange">Explore Activities</a>
+              <a href="#about" class="btn btn-outline">Read More</a>
+            </div>
+            <div class="hero-info">
+              <div class="hero-info-item">
+                <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                <div><strong>For Booking</strong><span>+1800-1245-1210</span></div>
+              </div>
+              <div class="hero-info-item">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                <div><strong>Location</strong><span>Entebbe Kitala</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Slide 2 -->
+      <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=1600&q=80')">
+        <div class="container">
+          <div class="hero-content">
+            <span class="hero-badge">Nature Escapes</span>
+            <h2>Discover Magical <span>Waterfalls</span> & Landscapes</h2>
+            <p>From Sipi Falls to hidden gem cascades — experience the raw beauty of Uganda’s waterfalls with our expert guides.</p>
+            <div class="hero-actions">
+              <a href="#tours" class="btn btn-orange">View Tours</a>
+              <a href="#contact" class="btn btn-outline">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Slide 3 -->
+      <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?w=1600&q=80')">
+        <div class="container">
+          <div class="hero-content">
+            <span class="hero-badge">Wildlife Adventures</span>
+            <h2>Gorilla Trekking & <span>Safari</span> Experiences</h2>
+            <p>Get up close with mountain gorillas and witness the Big Five on unforgettable game drives across East Africa.</p>
+            <div class="hero-actions">
+              <a href="#activities" class="btn btn-orange">Explore Activities</a>
+              <a href="#contact" class="btn btn-outline">Contact Us</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-arrows">
+      <button class="hero-arrow" id="heroPrev" aria-label="Previous">‹</button>
+      <button class="hero-arrow" id="heroNext" aria-label="Next">›</button>
+    </div>
+    <div class="hero-controls" id="heroDots"></div>
+
+    <div class="search-box">
+      <input type="text" placeholder="Discover Your Trekking...">
+      <button aria-label="Search">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- Activities -->
+  <section class="activities" id="activities">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Our Trips</span>
+        <h2>Explore Activities</h2>
+        <p>Hand-picked adventures designed to create lifelong memories across Uganda and East Africa.</p>
+      </div>
+      <div class="activities-grid">
+        <div class="activity-card">
+          <div class="activity-img">
+            <img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&q=80" alt="SightSeeing">
+            <div class="activity-rating">★ 7.9</div>
+          </div>
+          <div class="activity-body">
+            <div class="activity-price">Start from $200 – $300</div>
+            <h3>SightSeeing</h3>
+            <p>Discover the stunning landscapes and cultural highlights of Uganda with our expert local guides.</p>
+            <a href="#contact" class="btn btn-green">Book Now</a>
+          </div>
+        </div>
+        <div class="activity-card">
+          <div class="activity-img">
+            <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80" alt="Discover">
+            <div class="activity-rating">★ 8.7</div>
+          </div>
+          <div class="activity-body">
+            <div class="activity-price">Start from $1000 – $2500</div>
+            <h3>Discover Wildlife</h3>
+            <p>Experience the thrill of safari drives and close encounters with Africa's iconic wildlife.</p>
+            <a href="#contact" class="btn btn-green">Book Now</a>
+          </div>
+        </div>
+        <div class="activity-card">
+          <div class="activity-img">
+            <img src="https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?w=600&q=80" alt="Explore">
+            <div class="activity-rating">★ 8.9</div>
+          </div>
+          <div class="activity-body">
+            <div class="activity-price">Start from $1000 – $2500</div>
+            <h3>Explore Trekking</h3>
+            <p>Hike through lush forests and challenge yourself with unforgettable mountain treks.</p>
+            <a href="#contact" class="btn btn-green">Book Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-img">
+          <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80" alt="About Viatrix">
+        </div>
+        <div class="about-content">
+          <span class="section-label">About Us</span>
+          <h2>Your Trusted Partner for Unforgettable Adventures</h2>
+          <p>Viatrix Tours & Travel is dedicated to creating exceptional travel experiences across Uganda and East Africa. From gorilla trekking to lakeside camping, we craft journeys filled with passion, professionalism, and genuine hospitality.</p>
+          <p>Our team of experienced guides ensures every moment is safe, memorable, and tailored to your interests — whether you seek adventure, culture, or pure relaxation.</p>
+          <div class="about-stats">
+            <div class="stat-item"><h4>500+</h4><span>Happy Travelers</span></div>
+            <div class="stat-item"><h4>50+</h4><span>Tour Packages</span></div>
+            <div class="stat-item"><h4>10+</h4><span>Years Experience</span></div>
+          </div>
+          <a href="#contact" class="btn btn-orange">Get In Touch</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== STAFF SLIDER ========== -->
+  <section class="staff" id="staff">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Meet The Team</span>
+        <h2>Our Expert Staff</h2>
+        <p>Passionate professionals dedicated to making your journey safe, exciting, and unforgettable.</p>
+      </div>
+      <div class="staff-slider-wrapper">
+        <div class="staff-track" id="staffTrack">
+          <div class="staff-card">
+            <div class="staff-img"><img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80" alt="James Okello"></div>
+            <div class="staff-body">
+              <h3>James Okello</h3>
+              <div class="staff-role">Founder & Lead Guide</div>
+              <p>15+ years leading gorilla treks and wildlife safaris across Uganda.</p>
+            </div>
+          </div>
+          <div class="staff-card">
+            <div class="staff-img"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80" alt="Sarah Namukasa"></div>
+            <div class="staff-body">
+              <h3>Sarah Namukasa</h3>
+              <div class="staff-role">Operations Manager</div>
+              <p>Ensures every tour runs smoothly with exceptional attention to detail.</p>
+            </div>
+          </div>
+          <div class="staff-card">
+            <div class="staff-img"><img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80" alt="David Mutebi"></div>
+            <div class="staff-body">
+              <h3>David Mutebi</h3>
+              <div class="staff-role">Safari Specialist</div>
+              <p>Expert in game drives and birding expeditions across East Africa.</p>
+            </div>
+          </div>
+          <div class="staff-card">
+            <div class="staff-img"><img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80" alt="Grace Achieng"></div>
+            <div class="staff-body">
+              <h3>Grace Achieng</h3>
+              <div class="staff-role">Customer Experience</div>
+              <p>Dedicated to creating warm, personalized experiences for every guest.</p>
+            </div>
+          </div>
+          <div class="staff-card">
+            <div class="staff-img"><img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80" alt="Peter Ssemwogerere"></div>
+            <div class="staff-body">
+              <h3>Peter Ssemwogerere</h3>
+              <div class="staff-role">Adventure Guide</div>
+              <p>Specializes in hiking, waterfall tours, and cultural village visits.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="staff-nav">
+        <button id="staffPrev" aria-label="Previous">‹</button>
+        <button id="staffNext" aria-label="Next">›</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== REVIEWS SLIDER ========== -->
+  <section class="testimonials" id="testimonials">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Testimonials</span>
+        <h2>What Our Clients Say</h2>
+        <p>Here's a look at what people are saying about us. We're proud to have helped so many achieve their travel goals.</p>
+      </div>
+      <div class="reviews-slider-wrapper">
+        <div class="reviews-track" id="reviewsTrack">
+          <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★★</div>
+            <p>"The best tour and travel company you can trust with all your travels in and around Uganda, E. Africa. Try them and you wouldn't regret."</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">G</div>
+              <div class="author-info"><h5>Gorret Luboobi</h5><span>Satisfied Traveler</span></div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★★</div>
+            <p>"The passion for tourism, the ecstasy, joy and hospitality received from this company was beyond. Keep it up Viatrix Tours and Travel!"</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">L</div>
+              <div class="author-info"><h5>Lugona Fulugyensio</h5><span>Adventure Seeker</span></div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★★</div>
+            <p>"Viatrix Tours and Travel exceeds our expectations. They move with discipline, care, time management, and professionalism."</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">N</div>
+              <div class="author-info"><h5>Nakakaawa Cathy</h5><span>Happy Client</span></div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★★</div>
+            <p>"An unforgettable gorilla trekking experience! The guides were knowledgeable and the entire trip was perfectly organized."</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">M</div>
+              <div class="author-info"><h5>Michael Torres</h5><span>International Guest</span></div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★☆</div>
+            <p>"Great value for money. The safari was incredible and the accommodation arrangements were excellent. Highly recommended!"</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">A</div>
+              <div class="author-info"><h5>Amina Hassan</h5><span>Family Traveler</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="reviews-nav">
+        <button id="reviewsPrev" aria-label="Previous">‹</button>
+        <button id="reviewsNext" aria-label="Next">›</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== USER SUBMIT REVIEW ========== -->
+  <section class="submit-review" id="submit-review">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Share Your Experience</span>
+        <h2>Leave a Review</h2>
+        <p>We value your feedback. Tell us about your journey with Viatrix Tours & Travel.</p>
+      </div>
+      <div class="review-form-card">
+        <h3>Write Your Review</h3>
+        <p>Your honest opinion helps other travelers and helps us improve.</p>
+        <form id="reviewForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="reviewName">Your Name *</label>
+              <input type="text" id="reviewName" required placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+              <label for="reviewEmail">Email Address *</label>
+              <input type="email" id="reviewEmail" required placeholder="you@example.com">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Your Rating *</label>
+            <div class="rating-select" id="ratingSelect">
+              <span data-value="1">★</span>
+              <span data-value="2">★</span>
+              <span data-value="3">★</span>
+              <span data-value="4">★</span>
+              <span data-value="5">★</span>
+            </div>
+            <input type="hidden" id="reviewRating" value="0" required>
+          </div>
+          <div class="form-group">
+            <label for="reviewTour">Tour / Activity</label>
+            <select id="reviewTour">
+              <option value="">Select a tour (optional)</option>
+              <option value="sightseeing">SightSeeing</option>
+              <option value="wildlife">Discover Wildlife</option>
+              <option value="trekking">Explore Trekking</option>
+              <option value="gorilla">Gorilla Trekking</option>
+              <option value="waterfalls">Water Falls</option>
+              <option value="city">City Tour Kampala</option>
+              <option value="game">Game Parks</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="reviewText">Your Review *</label>
+            <textarea id="reviewText" required placeholder="Share your experience with us..."></textarea>
+          </div>
+          <div class="form-submit">
+            <button type="submit" class="btn btn-orange">Submit Review</button>
+          </div>
+          <div class="form-message" id="formMessage">Thank you! Your review has been submitted successfully.</div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tours -->
+  <section id="tours">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">From The Portfolio</span>
+        <h2>Our Popular Tours</h2>
+        <p>Explore our most loved destinations and experiences carefully curated for every type of traveler.</p>
+      </div>
+      <div class="tours-grid">
+        <div class="tour-card">
+          <img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&q=80" alt="Water Falls">
+          <div class="tour-overlay"><h3>Water Falls</h3><div class="price">$500 – $650</div></div>
+        </div>
+        <div class="tour-card">
+          <img src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=600&q=80" alt="City Tour">
+          <div class="tour-overlay"><h3>City Tour Kampala</h3><div class="price">$200 – $300</div></div>
+        </div>
+        <div class="tour-card">
+          <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80" alt="Game Parks">
+          <div class="tour-overlay"><h3>Game Parks</h3><div class="price">$1000 – $1500</div></div>
+        </div>
+        <div class="tour-card">
+          <img src="https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?w=600&q=80" alt="Gorilla Trekking">
+          <div class="tour-overlay"><h3>Gorilla Trekking</h3><div class="price">$1000 – $2500</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PAYMENT & POLICIES ========== -->
+  <section class="payment-policies" id="payment">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Book With Confidence</span>
+        <h2>Payment Methods & Policies</h2>
+        <p>We offer secure payment options and transparent policies so you can book with peace of mind.</p>
+      </div>
+      <div class="pp-grid">
+        <div class="pp-card">
+          <h3><span>💳</span> Accepted Payment Methods</h3>
+          <div class="payment-methods">
+            <div class="payment-badge">
+              <svg viewBox="0 0 24 24" fill="#1A1F71"><path d="M9.112 8.262L5.97 15.758H3.836L2.467 10.405c-.083-.315-.156-.432-.411-.566C1.644 9.626.901 9.37.901 9.37l.036-.189h3.33c.447 0 .85.298.951.732l.87 4.626 2.148-5.358h2.22zM16.308 15.758h-1.945l1.222-7.496h1.944l-1.221 7.496zm7.125-7.32c-.751-.287-1.922-.602-3.385-.602-1.865 0-3.176.94-3.188 2.285-.012.995.937 1.548 1.652 1.879.734.339 1.007.557 1.003.86-.006.464-.555.675-1.068.675-.715 0-1.098-.105-1.687-.357l-.231-.105-.252 1.48c.42.184 1.197.344 2.003.352 1.99 0 3.285-.932 3.3-2.375.008-.791-.496-1.393-1.584-1.889-.66-.322-1.064-.536-1.058-.862.004-.296.353-.612 1.116-.612.637-.011 1.099.13 1.455.275l.175.082.263-1.346zm2.705-.176h-1.595c-.38 0-.665.11-.832.512l-2.97 6.98h2.21l.416-1.15h2.705l.242 1.15H24l-1.862-7.492zm-2.52 4.818l1.113-3.03.64 3.03h-1.753z"/></svg>
+              Visa
+            </div>
+            <div class="payment-badge">
+              <svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="6" fill="#EB001B"/><circle cx="16" cy="12" r="6" fill="#F79E1B"/><path d="M12 7.5a6 6 0 0 1 0 9 6 6 0 0 1 0-9z" fill="#FF5F00"/></svg>
+              Mastercard
+            </div>
+            <div class="payment-badge">
+              <svg viewBox="0 0 24 24" fill="#003087"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.72a.77.77 0 0 1 .758-.647h4.606c2.456 0 4.23.62 5.27 1.844 1.04 1.224 1.32 2.83.83 4.77-.22.87-.59 1.66-1.1 2.35-.51.69-1.15 1.25-1.9 1.68-.75.43-1.61.74-2.57.92-.96.18-2.02.27-3.16.27H6.02l-.85 5.07a.641.641 0 0 1-.633.523h-1.46l.999-5.95h.001z"/></svg>
+              PayPal
+            </div>
+            <div class="payment-badge">Mobile Money</div>
+            <div class="payment-badge">Bank Transfer</div>
+            <div class="payment-badge">Cash on Arrival</div>
+          </div>
+          <ul>
+            <li>All online payments are processed through secure, encrypted gateways</li>
+            <li>A deposit of 30% is required to confirm your booking</li>
+            <li>Full payment is due 14 days before the tour start date</li>
+            <li>Invoices and receipts are provided for every transaction</li>
+          </ul>
+        </div>
+        <div class="pp-card">
+          <h3><span>📋</span> Booking & Cancellation Policies</h3>
+          <ul>
+            <li><strong>Free cancellation</strong> up to 14 days before the tour date</li>
+            <li>50% refund for cancellations 7–13 days prior</li>
+            <li>No refund for cancellations less than 7 days before departure</li>
+            <li>Rescheduling is free if requested at least 7 days in advance</li>
+            <li>In case of force majeure, full credit or refund options apply</li>
+            <li>Travel insurance is strongly recommended for all bookings</li>
+            <li>Group discounts available for parties of 6 or more</li>
+            <li>Children under 5 years travel free on most tours</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="container">
+      <h2>Ready for Your Next Adventure?</h2>
+      <p>Contact us today and let’s plan the trip of a lifetime. Our team is ready to make your travel dreams come true.</p>
+      <a href="tel:+180012451210" class="btn btn-orange">Call +1800-1245-1210</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contact">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="logo">
+            <div class="logo-icon">VT</div>
+            <div class="logo-text"><h1>Viatrix Tours & Travel</h1></div>
+          </a>
+          <p>Your trusted partner for adventure tours, wildlife safaris, and cultural experiences across Uganda and East Africa.</p>
+          <div class="socials">
+            <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
+              <svg viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter / X">
+              <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.792l7.73-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
+            </a>
+            <a href="https://youtube.com" target="_blank" rel="noopener" aria-label="YouTube">
+              <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </a>
+            <a href="https://wa.me/180012451210" target="_blank" rel="noopener" aria-label="WhatsApp" class="whatsapp">
+              <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#activities">Activities</a></li>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#staff">Our Team</a></li>
+            <li><a href="#tours">Our Tours</a></li>
+            <li><a href="#testimonials">Reviews</a></li>
+            <li><a href="#payment">Payment & Policies</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Popular Tours</h4>
+          <ul>
+            <li><a href="#tours">Gorilla Trekking</a></li>
+            <li><a href="#tours">Game Parks Safari</a></li>
+            <li><a href="#tours">Water Falls</a></li>
+            <li><a href="#tours">City Tour Kampala</a></li>
+            <li><a href="#activities">SightSeeing</a></li>
+          </ul>
+        </div>
+        <div class="footer-col footer-contact">
+          <h4>Contact Us</h4>
+          <ul>
+            <li>
+              <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              <span>Entebbe Kitala, Uganda</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+              <span>+1800-1245-1210</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+              <span>info@viatrix-tours.com</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+              <span>WhatsApp: +1800-1245-1210</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Viatrix Tours & Travel. All rights reserved.</p>
+        <div>
+          <a href="#privacy">Privacy Policy</a>
+          <a href="#terms">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp -->
+  <a href="https://wa.me/180012451210?text=Hello%20Viatrix%20Tours!%20I%20am%20interested%20in%20booking%20a%20tour." class="whatsapp-float" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+  </a>
+
+  <script>
+    // ===== Mobile Menu =====
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+    menuToggle.addEventListener('click', () => mainNav.classList.toggle('open'));
+    document.querySelectorAll('nav a').forEach(link => {
+      link.addEventListener('click', () => mainNav.classList.remove('open'));
+    });
+
+    // ===== Active Nav on Scroll =====
+    const sections = document.querySelectorAll('section[id]');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        if (scrollY >= section.offsetTop - 120) current = section.getAttribute('id');
+      });
+      document.querySelectorAll('nav a').forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+      });
+    });
+
+    // ===== HERO SLIDER =====
+    const heroSlides = document.querySelectorAll('.hero-slide');
+    const heroDotsContainer = document.getElementById('heroDots');
+    let heroIndex = 0;
+    let heroTimer;
+
+    heroSlides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'hero-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+      dot.addEventListener('click', () => goToHero(i));
+      heroDotsContainer.appendChild(dot);
+    });
+
+    function goToHero(index) {
+      heroSlides[heroIndex].classList.remove('active');
+      heroDotsContainer.children[heroIndex].classList.remove('active');
+      heroIndex = index;
+      heroSlides[heroIndex].classList.add('active');
+      heroDotsContainer.children[heroIndex].classList.add('active');
+      resetHeroTimer();
+    }
+
+    function nextHero() { goToHero((heroIndex + 1) % heroSlides.length); }
+    function prevHero() { goToHero((heroIndex - 1 + heroSlides.length) % heroSlides.length); }
+
+    document.getElementById('heroNext').addEventListener('click', nextHero);
+    document.getElementById('heroPrev').addEventListener('click', prevHero);
+
+    function resetHeroTimer() {
+      clearInterval(heroTimer);
+      heroTimer = setInterval(nextHero, 5500);
+    }
+    resetHeroTimer();
+
+    // ===== STAFF SLIDER =====
+    const staffTrack = document.getElementById('staffTrack');
+    const staffCards = staffTrack.children;
+    let staffIndex = 0;
+    function getStaffVisible() {
+      if (window.innerWidth <= 768) return 1;
+      if (window.innerWidth <= 992) return 2;
+      if (window.innerWidth <= 1100) return 3;
+      return 4;
+    }
+    function updateStaff() {
+      const visible = getStaffVisible();
+      const max = Math.max(0, staffCards.length - visible);
+      if (staffIndex > max) staffIndex = max;
+      const cardWidth = staffCards[0].offsetWidth + 25;
+      staffTrack.style.transform = `translateX(-${staffIndex * cardWidth}px)`;
+    }
+    document.getElementById('staffNext').addEventListener('click', () => {
+      const visible = getStaffVisible();
+      if (staffIndex < staffCards.length - visible) { staffIndex++; updateStaff(); }
+    });
+    document.getElementById('staffPrev').addEventListener('click', () => {
+      if (staffIndex > 0) { staffIndex--; updateStaff(); }
+    });
+    window.addEventListener('resize', updateStaff);
+
+    // ===== REVIEWS SLIDER =====
+    const reviewsTrack = document.getElementById('reviewsTrack');
+    const reviewCards = reviewsTrack.children;
+    let reviewsIndex = 0;
+    function getReviewsVisible() {
+      if (window.innerWidth <= 768) return 1;
+      if (window.innerWidth <= 1100) return 2;
+      return 3;
+    }
+    function updateReviews() {
+      const visible = getReviewsVisible();
+      const max = Math.max(0, reviewCards.length - visible);
+      if (reviewsIndex > max) reviewsIndex = max;
+      const cardWidth = reviewCards[0].offsetWidth + 25;
+      reviewsTrack.style.transform = `translateX(-${reviewsIndex * cardWidth}px)`;
+    }
+    document.getElementById('reviewsNext').addEventListener('click', () => {
+      const visible = getReviewsVisible();
+      if (reviewsIndex < reviewCards.length - visible) { reviewsIndex++; updateReviews(); }
+    });
+    document.getElementById('reviewsPrev').addEventListener('click', () => {
+      if (reviewsIndex > 0) { reviewsIndex--; updateReviews(); }
+    });
+    window.addEventListener('resize', updateReviews);
+
+    // ===== STAR RATING =====
+    const ratingSelect = document.getElementById('ratingSelect');
+    const ratingInput = document.getElementById('reviewRating');
+    ratingSelect.querySelectorAll('span').forEach(star => {
+      star.addEventListener('click', () => {
+        const val = parseInt(star.dataset.value);
+        ratingInput.value = val;
+        ratingSelect.querySelectorAll('span').forEach(s => {
+          s.classList.toggle('active', parseInt(s.dataset.value) <= val);
+        });
+      });
+    });
+
+    // ===== REVIEW FORM =====
+    document.getElementById('reviewForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (parseInt(ratingInput.value) === 0) {
+        alert('Please select a rating.');
+        return;
+      }
+      document.getElementById('formMessage').classList.add('success');
+      this.reset();
+      ratingSelect.querySelectorAll('span').forEach(s => s.classList.remove('active'));
+      ratingInput.value = 0;
+      setTimeout(() => {
+        document.getElementById('formMessage').classList.remove('success');
+      }, 5000);
+    });
+  </script>
+</body>
+</html>
