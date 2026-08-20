@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy – Viatrix Tours & Travel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #1B7A3D;
+      --green-dark: #0F4D26;
+      --orange: #F57C00;
+      --orange-dark: #E65100;
+      --black: #0D0D0D;
+      --black-soft: #1A1A1A;
+      --white: #FFFFFF;
+      --white-soft: #F8F8F8;
+      --gray: #E8E8E8;
+      --gray-dark: #666666;
+      --shadow: 0 10px 40px rgba(0,0,0,0.08);
+      --radius: 16px;
+      --transition: all 0.3s ease;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--black);
+      background: var(--white-soft);
+      line-height: 1.7;
+    }
+    a { text-decoration: none; color: inherit; transition: var(--transition); }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+
+    header {
+      background: var(--white);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 0; gap: 16px; flex-wrap: wrap;
+      max-width: 1100px; margin: 0 auto; padding-left: 20px; padding-right: 20px;
+    }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo-img {
+      width: 56px; height: 56px; object-fit: contain;
+      border: none; background: transparent;
+    }
+    .logo-text h1 { font-size: 1.1rem; font-weight: 700; line-height: 1.2; }
+    .logo-text span { font-size: 0.72rem; color: var(--green); font-weight: 500; }
+    .nav-links { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
+    .nav-links a { font-size: 0.88rem; font-weight: 500; color: var(--black-soft); }
+    .nav-links a:hover { color: var(--green); }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 24px; border-radius: 50px; font-weight: 600;
+      font-size: 0.88rem; border: none; cursor: pointer;
+      transition: var(--transition); font-family: inherit;
+    }
+    .btn-orange { background: var(--orange); color: var(--white); }
+    .btn-orange:hover { background: var(--orange-dark); transform: translateY(-2px); }
+    .btn-green { background: var(--green); color: var(--white); }
+    .btn-green:hover { background: var(--green-dark); }
+
+    .page-hero {
+      background: linear-gradient(135deg, var(--green-dark), var(--green));
+      color: var(--white); padding: 50px 0 55px; text-align: center;
+    }
+    .page-hero .badge {
+      display: inline-block; background: var(--orange);
+      padding: 5px 16px; border-radius: 50px; font-size: 0.78rem;
+      font-weight: 600; letter-spacing: 0.5px; margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+    .page-hero h2 { font-size: clamp(1.7rem, 4vw, 2.3rem); font-weight: 800; margin-bottom: 10px; }
+    .page-hero p { max-width: 560px; margin: 0 auto; opacity: 0.9; font-weight: 300; font-size: 0.95rem; }
+
+    .policy-nav {
+      background: var(--white); padding: 16px 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      position: sticky; top: 72px; z-index: 90;
+    }
+    .policy-nav ul {
+      list-style: none; display: flex; flex-wrap: wrap;
+      gap: 8px; justify-content: center;
+    }
+    .policy-nav a {
+      padding: 8px 14px; border-radius: 50px; font-size: 0.8rem;
+      font-weight: 600; border: 2px solid var(--gray); color: var(--black-soft);
+    }
+    .policy-nav a:hover {
+      border-color: var(--green); color: var(--green); background: rgba(27,122,61,0.05);
+    }
+
+    .content { padding: 45px 0 70px; }
+    .policy-card {
+      background: var(--white); border-radius: var(--radius);
+      padding: 36px 32px; margin-bottom: 28px;
+      box-shadow: var(--shadow); border: 1px solid var(--gray);
+    }
+    .policy-card h3 {
+      font-size: 1.2rem; font-weight: 700; margin-bottom: 16px;
+      color: var(--black); display: flex; align-items: center; gap: 12px;
+    }
+    .policy-card h3 .icon {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--green), var(--green-dark));
+      color: var(--white); display: flex; align-items: center;
+      justify-content: center; font-size: 1.1rem; flex-shrink: 0;
+    }
+    .policy-card h4 {
+      font-size: 1rem; font-weight: 600; margin: 20px 0 10px;
+      color: var(--green-dark);
+    }
+    .policy-card p {
+      font-size: 0.92rem; color: var(--black-soft); margin-bottom: 12px;
+    }
+    .policy-card ul, .policy-card ol {
+      margin: 12px 0 16px 0; padding-left: 22px;
+    }
+    .policy-card li {
+      font-size: 0.92rem; color: var(--black-soft); margin-bottom: 8px;
+    }
+    .policy-card li strong { color: var(--black); }
+
+    .highlight-box {
+      background: rgba(27,122,61,0.06);
+      border-left: 4px solid var(--green);
+      padding: 16px 18px; border-radius: 0 10px 10px 0;
+      margin: 18px 0; font-size: 0.9rem;
+    }
+    .highlight-box.orange {
+      background: rgba(245,124,0,0.08);
+      border-left-color: var(--orange);
+    }
+    .effective {
+      text-align: center; font-size: 0.85rem; color: var(--gray-dark);
+      margin-bottom: 30px;
+    }
+
+    footer {
+      background: var(--black); color: var(--white);
+      padding: 28px 0; text-align: center; font-size: 0.85rem;
+    }
+    footer a { color: var(--orange); }
+    footer a:hover { color: #FF9800; }
+
+    @media (max-width: 640px) {
+      .policy-card { padding: 24px 18px; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <img src="../531196AE-608A-43EF-9978-CADB0CDABB36.png" alt="Viatrix" class="logo-img" onerror="this.style.display='none'">
+        <div class="logo-text">
+          <h1>Viatrix Tours & Travel</h1>
+          <span>Adventure Awaits</span>
+        </div>
+      </a>
+      <div class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="../terms/index.html">Terms</a>
+        <a href="../payment-policy/index.html">Payment Policy</a>
+        <a href="../book.html">Book Now</a>
+      </div>
+      <a href="../book.html" class="btn btn-orange">Book a Tour</a>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="container">
+      <span class="badge">Your Data Matters</span>
+      <h2>Privacy Policy</h2>
+      <p>How Viatrix Tours & Travel Co. Ltd. collects, uses, stores, and protects your personal information.</p>
+    </div>
+  </section>
+
+  <nav class="policy-nav">
+    <div class="container">
+      <ul>
+        <li><a href="#who">Who We Are</a></li>
+        <li><a href="#collect">What We Collect</a></li>
+        <li><a href="#use">How We Use Data</a></li>
+        <li><a href="#share">Sharing</a></li>
+        <li><a href="#retain">Retention</a></li>
+        <li><a href="#rights">Your Rights</a></li>
+        <li><a href="#security">Security</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="container">
+
+      <p class="effective">
+        <strong>Viatrix Tours & Travel Co. Ltd.</strong> · Effective date: 1 January 2026 · Last updated: August 2026
+      </p>
+
+      <article class="policy-card" id="who">
+        <h3><span class="icon">1</span> Who We Are</h3>
+        <p>
+          This Privacy Policy explains how <strong>Viatrix Tours & Travel Co. Ltd.</strong> (“the Company”, “we”, “us”)
+          collects and processes personal data when you use our website, contact us, or book a tour.
+        </p>
+        <ul>
+          <li><strong>Company:</strong> Viatrix Tours & Travel Co. Ltd.</li>
+          <li><strong>Location:</strong> Entebbe Kitala, Uganda</li>
+          <li><strong>Email:</strong> <a href="mailto:viatrixtoursandtravelco@gmail.com" style="color:var(--green);font-weight:600;">viatrixtoursandtravelco@gmail.com</a></li>
+          <li><strong>Phone:</strong> <a href="tel:+256777271601" style="color:var(--green);font-weight:600;">+256 777 271 601</a> · <a href="tel:+4542520308" style="color:var(--green);font-weight:600;">+45 4252 0308</a></li>
+        </ul>
+        <p>
+          For the purposes of applicable data protection law, the Company is the data controller of the personal data described in this policy.
+        </p>
+      </article>
+
+      <article class="policy-card" id="collect">
+        <h3><span class="icon">2</span> What Personal Data We Collect</h3>
+        <h4>2.1 Information you provide</h4>
+        <ul>
+          <li><strong>Identity & contact:</strong> Full name, email address, phone / WhatsApp number, country of residence, preferred language.</li>
+          <li><strong>Booking details:</strong> Tour selection, travel dates, number of guests, special requests, dietary or accessibility needs.</li>
+          <li><strong>Payment-related:</strong> Payment method chosen, transaction references, and limited billing details (we do not store full card numbers on our own servers when payments are processed by third-party gateways).</li>
+          <li><strong>Communications:</strong> Messages you send via contact forms, email, WhatsApp, or review forms.</li>
+          <li><strong>Reviews:</strong> Name, rating, tour reference, and review text if you submit feedback.</li>
+        </ul>
+        <h4>2.2 Information collected automatically</h4>
+        <ul>
+          <li>Technical data such as IP address, browser type, device type, and pages visited (e.g. via standard web server logs or analytics tools, if enabled).</li>
+          <li>Cookies or similar technologies if used on our website (see Cookies section below).</li>
+        </ul>
+        <h4>2.3 Information from third parties</h4>
+        <p>
+          We may receive limited information from payment providers (e.g. payment confirmation) or from partners involved in delivering your tour
+          (e.g. lodges confirming guest names), only as needed to fulfil your booking.
+        </p>
+      </article>
+
+      <article class="policy-card" id="use">
+        <h3><span class="icon">3</span> How We Use Your Data</h3>
+        <p>We process personal data for the following purposes:</p>
+        <ul>
+          <li><strong>To provide our services</strong> — process bookings, send confirmations and invoices, arrange logistics, and communicate about your tour.</li>
+          <li><strong>To respond to enquiries</strong> — answer questions via email, WhatsApp, or the website.</li>
+          <li><strong>To improve our services</strong> — analyse feedback and website use to improve itineraries and customer experience.</li>
+          <li><strong>Marketing</strong> — where you have opted in or where permitted by law, send you information about tours and offers. You may opt out at any time.</li>
+          <li><strong>Legal and safety</strong> — comply with legal obligations, prevent fraud, and protect the rights and safety of clients and staff.</li>
+        </ul>
+        <div class="highlight-box">
+          <strong>Legal bases</strong> (where applicable): performance of a contract; legitimate interests (e.g. improving services, security);
+          consent (e.g. optional marketing); and legal obligation.
+        </div>
+      </article>
+
+      <article class="policy-card" id="share">
+        <h3><span class="icon">4</span> Sharing Your Data</h3>
+        <p>We do not sell your personal data. We may share it only as follows:</p>
+        <ul>
+          <li><strong>Service providers</strong> — accommodation, transport, park authorities, payment processors, and email/IT providers, solely as needed to deliver your booking or operate our business.</li>
+          <li><strong>Professional advisers</strong> — lawyers, accountants, or insurers where necessary.</li>
+          <li><strong>Authorities</strong> — when required by law, regulation, or court order, or to protect vital interests.</li>
+          <li><strong>Business transfers</strong> — if the Company is involved in a merger or sale, data may be transferred under appropriate safeguards.</li>
+        </ul>
+        <p>
+          When we share data with providers outside your country, we take reasonable steps to ensure an adequate level of protection,
+          consistent with applicable law.
+        </p>
+      </article>
+
+      <article class="policy-card" id="retain">
+        <h3><span class="icon">5</span> Data Retention</h3>
+        <ul>
+          <li><strong>Booking records</strong> — kept for as long as needed to fulfil the contract and for a reasonable period thereafter for accounting, tax, and dispute resolution (typically up to 7 years where required by law).</li>
+          <li><strong>Enquiries & reviews</strong> — kept for as long as useful to respond and improve services, or until you request deletion where applicable.</li>
+          <li><strong>Marketing lists</strong> — until you unsubscribe or we decide the data is no longer needed.</li>
+        </ul>
+        <p>When data is no longer required, we will delete or anonymise it in a secure manner.</p>
+      </article>
+
+      <article class="policy-card" id="rights">
+        <h3><span class="icon">6</span> Your Rights</h3>
+        <p>Depending on applicable law, you may have the right to:</p>
+        <ul>
+          <li><strong>Access</strong> — request a copy of personal data we hold about you.</li>
+          <li><strong>Rectification</strong> — ask us to correct inaccurate or incomplete data.</li>
+          <li><strong>Erasure</strong> — request deletion in certain circumstances.</li>
+          <li><strong>Restriction</strong> — ask us to limit processing in certain cases.</li>
+          <li><strong>Objection</strong> — object to processing based on legitimate interests or to direct marketing.</li>
+          <li><strong>Data portability</strong> — receive data you provided in a structured, commonly used format, where applicable.</li>
+          <li><strong>Withdraw consent</strong> — where processing is based on consent, withdraw it at any time without affecting prior lawful processing.</li>
+        </ul>
+        <p>
+          To exercise these rights, contact us at
+          <a href="mailto:viatrixtoursandtravelco@gmail.com" style="color:var(--green);font-weight:600;">viatrixtoursandtravelco@gmail.com</a>.
+          We may need to verify your identity before responding. We aim to respond within a reasonable period (and within any time limits set by law).
+        </p>
+      </article>
+
+      <article class="policy-card" id="security">
+        <h3><span class="icon">7</span> Security</h3>
+        <p>
+          We take appropriate technical and organisational measures to protect personal data against unauthorised access, loss, or misuse.
+          These include limited staff access, secure communication channels where practical, and careful selection of service providers.
+        </p>
+        <div class="highlight-box orange">
+          No method of transmission over the internet is completely secure. Please use official Company email and phone numbers only,
+          and do not send full payment card details by unencrypted email.
+        </div>
+      </article>
+
+      <article class="policy-card" id="cookies">
+        <h3><span class="icon">8</span> Cookies & Website</h3>
+        <p>
+          Our website may use cookies or similar technologies for essential functionality, preferences, and (if enabled) analytics.
+          You can control cookies through your browser settings. Disabling some cookies may affect site functionality.
+        </p>
+        <p>
+          Third-party services (e.g. embedded maps, payment pages, or analytics) may set their own cookies subject to their privacy policies.
+        </p>
+      </article>
+
+      <article class="policy-card" id="children">
+        <h3><span class="icon">9</span> Children</h3>
+        <p>
+          Our services are not directed at children under 16 without parental involvement.
+          We do not knowingly collect personal data from children under 16 without consent from a parent or guardian.
+          If you believe we have collected such data in error, please contact us so we can delete it.
+        </p>
+      </article>
+
+      <article class="policy-card" id="changes">
+        <h3><span class="icon">10</span> Changes to This Policy</h3>
+        <p>
+          We may update this Privacy Policy from time to time. The updated version will be posted on this page with a revised “Last updated” date.
+          Significant changes may also be communicated by email where appropriate. Continued use of our services after changes constitutes acceptance of the updated policy,
+          where permitted by law.
+        </p>
+      </article>
+
+      <article class="policy-card" id="contact">
+        <h3><span class="icon">11</span> Contact Us</h3>
+        <p>For any privacy-related questions or requests, please contact:</p>
+        <ul>
+          <li><strong>Company:</strong> Viatrix Tours & Travel Co. Ltd.</li>
+          <li><strong>Email:</strong> <a href="mailto:viatrixtoursandtravelco@gmail.com" style="color:var(--green);font-weight:600;">viatrixtoursandtravelco@gmail.com</a></li>
+          <li><strong>Tel / WhatsApp:</strong> <a href="tel:+256777271601" style="color:var(--green);font-weight:600;">+256 777 271 601</a> · <a href="tel:+4542520308" style="color:var(--green);font-weight:600;">+45 4252 0308</a></li>
+          <li><strong>Address:</strong> Entebbe Kitala, Uganda</li>
+        </ul>
+        <p style="margin-top:8px;">
+          Related documents:
+          <a href="../terms/index.html" style="color:var(--green);font-weight:600;">Terms and Conditions</a> ·
+          <a href="../payment-policy/index.html" style="color:var(--green);font-weight:600;">Payment Policy</a>
+        </p>
+        <p style="margin-top:22px;">
+          <a href="../book.html" class="btn btn-orange">Book a Tour</a>
+          <a href="../index.html" class="btn btn-green" style="margin-left:10px;">Back to Home</a>
+        </p>
+      </article>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>
+        &copy; 2026 Viatrix Tours & Travel Co. Ltd. ·
+        <a href="../index.html">Home</a> ·
+        <a href="../terms/index.html">Terms</a> ·
+        <a href="../payment-policy/index.html">Payment Policy</a> ·
+        <a href="mailto:viatrixtoursandtravelco@gmail.com">viatrixtoursandtravelco@gmail.com</a>
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>
