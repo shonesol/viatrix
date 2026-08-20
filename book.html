@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Your Tour – Viatrix Tours & Travel</title>
+
+  <!-- EmailJS -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================
+       VIATRIX TOURS – BOOKING PAGE
+       Colors: Green | Orange | Black | White
+       ============================================ */
+    :root {
+      --green: #1B7A3D;
+      --green-dark: #0F4D26;
+      --green-light: #2E9B50;
+      --orange: #F57C00;
+      --orange-dark: #E65100;
+      --orange-light: #FF9800;
+      --black: #0D0D0D;
+      --black-soft: #1A1A1A;
+      --white: #FFFFFF;
+      --white-soft: #F8F8F8;
+      --gray: #E8E8E8;
+      --gray-dark: #666666;
+      --shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --transition: all 0.3s ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--black);
+      background: var(--white-soft);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    a { text-decoration: none; color: inherit; transition: var(--transition); }
+    img { max-width: 100%; display: block; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+    /* HEADER */
+    .booking-header {
+      background: var(--white);
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      gap: 20px;
+    }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo-img {
+      width: 52px; height: 52px;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 3px solid var(--orange);
+      background: var(--white);
+    }
+    .logo-text h1 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--black);
+      line-height: 1.2;
+    }
+    .logo-text span {
+      font-size: 0.72rem;
+      color: var(--green);
+      font-weight: 500;
+      letter-spacing: 0.4px;
+    }
+    .header-actions { display: flex; align-items: center; gap: 16px; }
+    .back-link {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--black-soft);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .back-link:hover { color: var(--green); }
+    .back-link svg { width: 18px; height: 18px; fill: currentColor; }
+
+    /* HERO */
+    .booking-hero {
+      background: linear-gradient(135deg, var(--green-dark), var(--green));
+      color: var(--white);
+      padding: 50px 0 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .booking-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%; right: -20%;
+      width: 500px; height: 500px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 50%;
+    }
+    .booking-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -40%; left: -10%;
+      width: 400px; height: 400px;
+      background: rgba(245, 124, 0, 0.1);
+      border-radius: 50%;
+    }
+    .booking-hero .container { position: relative; z-index: 2; }
+    .booking-hero .badge {
+      display: inline-block;
+      background: var(--orange);
+      color: var(--white);
+      padding: 6px 18px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+    .booking-hero h2 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .booking-hero p {
+      max-width: 520px;
+      margin: 0 auto;
+      opacity: 0.9;
+      font-size: 1rem;
+      font-weight: 300;
+    }
+
+    /* PROGRESS */
+    .progress-bar {
+      background: var(--white);
+      padding: 25px 0;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+      margin-bottom: 40px;
+    }
+    .steps {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      position: relative;
+    }
+    .step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 18px; left: 55%;
+      width: 90%; height: 3px;
+      background: var(--gray);
+      z-index: 0;
+    }
+    .step.active:not(:last-child)::after,
+    .step.completed:not(:last-child)::after { background: var(--green); }
+    .step-circle {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--gray);
+      color: var(--gray-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      position: relative;
+      z-index: 1;
+      transition: var(--transition);
+    }
+    .step.active .step-circle {
+      background: var(--orange);
+      color: var(--white);
+      box-shadow: 0 4px 15px rgba(245, 124, 0, 0.35);
+    }
+    .step.completed .step-circle {
+      background: var(--green);
+      color: var(--white);
+    }
+    .step-label {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--gray-dark);
+      text-align: center;
+    }
+    .step.active .step-label { color: var(--orange); font-weight: 600; }
+    .step.completed .step-label { color: var(--green); }
+
+    /* MAIN */
+    .booking-main { padding-bottom: 80px; }
+    .booking-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 40px;
+      margin-bottom: 30px;
+      border: 1px solid var(--gray);
+    }
+    .card-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .card-title .icon {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--green), var(--green-dark));
+      color: var(--white);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .card-subtitle {
+      color: var(--gray-dark);
+      font-size: 0.9rem;
+      margin-bottom: 30px;
+      padding-left: 52px;
+    }
+
+    /* FORM */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+    .form-group { margin-bottom: 0; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.88rem;
+      margin-bottom: 8px;
+      color: var(--black);
+    }
+    .form-group label .required { color: var(--orange); margin-left: 2px; }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid var(--gray);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--black);
+      background: var(--white);
+      transition: var(--transition);
+      appearance: none;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(27, 122, 61, 0.12);
+    }
+    .form-group textarea { min-height: 110px; resize: vertical; }
+    .form-group select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231B7A3D' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 40px;
+      cursor: pointer;
+    }
+
+    /* TOUR OPTIONS */
+    .tour-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 18px;
+      margin-bottom: 10px;
+    }
+    .tour-option {
+      border: 2px solid var(--gray);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      background: var(--white);
+    }
+    .tour-option:hover {
+      border-color: var(--orange);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+    .tour-option.selected {
+      border-color: var(--green);
+      background: rgba(27, 122, 61, 0.04);
+      box-shadow: 0 0 0 3px rgba(27, 122, 61, 0.12);
+    }
+    .tour-option.selected::after {
+      content: '✓';
+      position: absolute;
+      top: 12px; right: 12px;
+      width: 24px; height: 24px;
+      background: var(--green);
+      color: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .tour-option h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--black);
+      padding-right: 30px;
+    }
+    .tour-option .price {
+      color: var(--orange);
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+    .tour-option .desc {
+      font-size: 0.82rem;
+      color: var(--gray-dark);
+      line-height: 1.5;
+    }
+
+    .date-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 22px;
+    }
+
+    /* PAYMENT */
+    .payment-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 14px;
+      margin-bottom: 25px;
+    }
+    .payment-option {
+      border: 2px solid var(--gray);
+      border-radius: var(--radius-sm);
+      padding: 18px 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--black-soft);
+    }
+    .payment-option:hover { border-color: var(--orange); }
+    .payment-option.selected {
+      border-color: var(--green);
+      background: rgba(27, 122, 61, 0.05);
+      color: var(--green);
+      box-shadow: 0 0 0 3px rgba(27, 122, 61, 0.1);
+    }
+    .payment-option .pay-icon {
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    /* CONTACT CHOICE */
+    .contact-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .contact-option {
+      border: 2px solid var(--gray);
+      border-radius: var(--radius-sm);
+      padding: 16px 14px;
+      cursor: pointer;
+      transition: var(--transition);
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .contact-option:hover { border-color: var(--orange); }
+    .contact-option.selected {
+      border-color: #25D366;
+      background: rgba(37, 211, 102, 0.06);
+      box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.12);
+    }
+    .contact-option .c-icon {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: #25D366;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .contact-option .c-icon.email { background: var(--green); }
+    .contact-option .c-text strong { display: block; font-size: 0.9rem; color: var(--black); }
+    .contact-option .c-text span { font-size: 0.8rem; color: var(--gray-dark); }
+
+
+    /* LAYOUT */
+    .booking-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 30px;
+      align-items: start;
+    }
+    .summary-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--gray);
+      padding: 28px;
+      position: sticky;
+      top: 100px;
+    }
+    .summary-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--gray);
+      color: var(--black);
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+      font-size: 0.9rem;
+    }
+    .summary-row .label { color: var(--gray-dark); }
+    .summary-row .value {
+      font-weight: 600;
+      color: var(--black);
+      text-align: right;
+      max-width: 55%;
+    }
+    .summary-divider {
+      height: 1px;
+      background: var(--gray);
+      margin: 18px 0;
+    }
+    .summary-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+    .summary-total .total-price {
+      color: var(--orange);
+      font-size: 1.4rem;
+    }
+    .summary-note {
+      font-size: 0.78rem;
+      color: var(--gray-dark);
+      margin-top: 16px;
+      padding: 12px;
+      background: var(--white-soft);
+      border-radius: 8px;
+      border-left: 3px solid var(--orange);
+    }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    .btn-orange { background: var(--orange); color: var(--white); }
+    .btn-orange:hover {
+      background: var(--orange-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(245, 124, 0, 0.35);
+    }
+    .btn-green { background: var(--green); color: var(--white); }
+    .btn-green:hover {
+      background: var(--green-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(27, 122, 61, 0.35);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--gray);
+      color: var(--black-soft);
+    }
+    .btn-outline:hover { border-color: var(--green); color: var(--green); }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    .btn-full { width: 100%; }
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 35px;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    /* SUCCESS */
+    .success-panel { display: none; text-align: center; padding: 50px 30px; }
+    .success-panel.show { display: block; }
+    .success-icon {
+      width: 90px; height: 90px;
+      background: linear-gradient(135deg, var(--green), var(--green-dark));
+      color: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      margin: 0 auto 25px;
+      box-shadow: 0 10px 30px rgba(27, 122, 61, 0.3);
+    }
+    .success-panel h2 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: var(--black);
+    }
+    .success-panel p {
+      color: var(--gray-dark);
+      max-width: 420px;
+      margin: 0 auto 25px;
+      font-size: 0.95rem;
+    }
+    .success-ref {
+      display: inline-block;
+      background: var(--white-soft);
+      border: 2px dashed var(--green);
+      padding: 12px 28px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--green);
+      margin-bottom: 30px;
+      letter-spacing: 1px;
+    }
+
+    .form-message {
+      display: none;
+      text-align: center;
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      margin-top: 20px;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    .form-message.success {
+      display: block;
+      background: rgba(27, 122, 61, 0.1);
+      color: var(--green);
+      border: 1px solid var(--green);
+    }
+    .form-message.error {
+      display: block;
+      background: rgba(230, 81, 0, 0.08);
+      color: var(--orange-dark);
+      border: 1px solid var(--orange);
+    }
+
+    /* FOOTER */
+    .booking-footer {
+      background: var(--black);
+      color: var(--white);
+      padding: 30px 0;
+      text-align: center;
+      font-size: 0.85rem;
+      opacity: 0.85;
+    }
+    .booking-footer a { color: var(--orange); }
+    .booking-footer a:hover { color: var(--orange-light); }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .booking-layout { grid-template-columns: 1fr; }
+      .summary-card { position: static; order: -1; }
+      .date-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .booking-card { padding: 25px 18px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .card-subtitle { padding-left: 0; }
+      .step-label { font-size: 0.7rem; }
+      .step-circle { width: 32px; height: 32px; font-size: 0.8rem; }
+      .tour-options { grid-template-columns: 1fr; }
+      .form-actions { flex-direction: column; }
+      .form-actions .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="booking-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <img src="531196AE-608A-43EF-9978-CADB0CDABB36.png" alt="Viatrix Tours & Travel" class="logo-img"
+             onerror="this.style.display='none'">
+        <div class="logo-text">
+          <h1>Viatrix Tours & Travel</h1>
+          <span>Adventure Awaits</span>
+        </div>
+      </a>
+      <div class="header-actions">
+        <a href="index.html" class="back-link">
+          <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+          Back to Home
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="booking-hero">
+    <div class="container">
+      <span class="badge">Secure Booking</span>
+      <h2>Book Your Adventure</h2>
+      <p>Complete the form below to reserve your tour. Our team will confirm your booking within 24 hours.</p>
+    </div>
+  </section>
+
+  <!-- PROGRESS -->
+  <div class="progress-bar">
+    <div class="container">
+      <div class="steps">
+        <div class="step active" data-step="1">
+          <div class="step-circle">1</div>
+          <div class="step-label">Tour & Dates</div>
+        </div>
+        <div class="step" data-step="2">
+          <div class="step-circle">2</div>
+          <div class="step-label">Your Details</div>
+        </div>
+        <div class="step" data-step="3">
+          <div class="step-circle">3</div>
+          <div class="step-label">Payment</div>
+        </div>
+        <div class="step" data-step="4">
+          <div class="step-circle">4</div>
+          <div class="step-label">Confirm</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <main class="booking-main">
+    <div class="container">
+      <div class="booking-layout">
+
+        <!-- FORM SIDE -->
+        <div class="form-side">
+
+          <!-- STEP 1 -->
+          <div class="booking-card step-panel" id="step1">
+            <h3 class="card-title"><span class="icon">🌍</span> Select Your Tour</h3>
+            <p class="card-subtitle">Choose the experience that matches your adventure style.</p>
+
+            <div class="tour-options" id="tourOptions">
+              <div class="tour-option" data-tour="SightSeeing" data-price="250">
+                <h4>SightSeeing</h4>
+                <div class="price">From $200 – $300</div>
+                <div class="desc">Landscapes & cultural highlights with expert local guides.</div>
+              </div>
+              <div class="tour-option" data-tour="Discover Wildlife" data-price="1750">
+                <h4>Discover Wildlife</h4>
+                <div class="price">From $1000 – $2500</div>
+                <div class="desc">Safari drives and close encounters with iconic wildlife.</div>
+              </div>
+              <div class="tour-option" data-tour="Explore Trekking" data-price="1750">
+                <h4>Explore Trekking</h4>
+                <div class="price">From $1000 – $2500</div>
+                <div class="desc">Mountain treks through lush forests and scenic trails.</div>
+              </div>
+              <div class="tour-option" data-tour="Gorilla Trekking" data-price="1750">
+                <h4>Gorilla Trekking</h4>
+                <div class="price">From $1000 – $2500</div>
+                <div class="desc">Unforgettable mountain gorilla encounters in the wild.</div>
+              </div>
+              <div class="tour-option" data-tour="Water Falls" data-price="575">
+                <h4>Water Falls</h4>
+                <div class="price">From $500 – $650</div>
+                <div class="desc">Sipi Falls and hidden cascades across Uganda.</div>
+              </div>
+              <div class="tour-option" data-tour="City Tour Kampala" data-price="250">
+                <h4>City Tour Kampala</h4>
+                <div class="price">From $200 – $300</div>
+                <div class="desc">Markets, museums and vibrant city culture.</div>
+              </div>
+              <div class="tour-option" data-tour="Game Parks" data-price="1250">
+                <h4>Game Parks</h4>
+                <div class="price">From $1000 – $1500</div>
+                <div class="desc">Game drives across East Africa’s best parks.</div>
+              </div>
+              <div class="tour-option" data-tour="Lakeside Camping" data-price="475">
+                <h4>Lakeside Camping</h4>
+                <div class="price">From $350 – $600</div>
+                <div class="desc">Camping under the stars by Lake Victoria.</div>
+              </div>
+            </div>
+
+            <div class="date-row" style="margin-top:30px;">
+              <div class="form-group">
+                <label>Start Date <span class="required">*</span></label>
+                <input type="date" id="startDate" required>
+              </div>
+              <div class="form-group">
+                <label>End Date <span class="required">*</span></label>
+                <input type="date" id="endDate" required>
+              </div>
+              <div class="form-group">
+                <label>Number of Guests <span class="required">*</span></label>
+                <select id="guests" required>
+                  <option value="1">1 Guest</option>
+                  <option value="2" selected>2 Guests</option>
+                  <option value="3">3 Guests</option>
+                  <option value="4">4 Guests</option>
+                  <option value="5">5 Guests</option>
+                  <option value="6">6 Guests</option>
+                  <option value="7">7 Guests</option>
+                  <option value="8">8+ Guests</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <div></div>
+              <button type="button" class="btn btn-orange" id="toStep2">Continue →</button>
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="booking-card step-panel" id="step2" style="display:none;">
+            <h3 class="card-title"><span class="icon">👤</span> Your Details</h3>
+            <p class="card-subtitle">Please provide accurate contact information for booking confirmation.</p>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label>First Name <span class="required">*</span></label>
+                <input type="text" id="firstName" placeholder="John" required>
+              </div>
+              <div class="form-group">
+                <label>Last Name <span class="required">*</span></label>
+                <input type="text" id="lastName" placeholder="Doe" required>
+              </div>
+              <div class="form-group">
+                <label>Email Address <span class="required">*</span></label>
+                <input type="email" id="email" placeholder="john@example.com" required>
+              </div>
+              <div class="form-group">
+                <label>Phone / WhatsApp <span class="required">*</span></label>
+                <input type="tel" id="phone" placeholder="+256 700 000 000" required>
+              </div>
+              <div class="form-group">
+                <label>Country</label>
+                <input type="text" id="country" placeholder="Uganda">
+              </div>
+              <div class="form-group">
+                <label>Preferred Language</label>
+                <select id="language">
+                  <option value="English">English</option>
+                  <option value="French">French</option>
+                  <option value="German">German</option>
+                  <option value="Spanish">Spanish</option>
+                  <option value="Swahili">Swahili</option>
+                </select>
+              </div>
+              <div class="form-group full">
+                <label>Special Requests / Notes</label>
+                <textarea id="notes" placeholder="Dietary needs, accessibility, room preferences, celebrations..."></textarea>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-outline" id="backTo1">← Back</button>
+              <button type="button" class="btn btn-orange" id="toStep3">Continue →</button>
+            </div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div class="booking-card step-panel" id="step3" style="display:none;">
+            <h3 class="card-title"><span class="icon">💳</span> Payment Method</h3>
+            <p class="card-subtitle">Select how you would like to pay. A 30% deposit confirms your booking.</p>
+
+            <div class="payment-options" id="paymentOptions">
+              <div class="payment-option" data-method="Mobile Money">
+                <span class="pay-icon">📱</span> Mobile Money
+              </div>
+              <div class="payment-option" data-method="Bank Transfer">
+                <span class="pay-icon">🏦</span> Bank Transfer
+              </div>
+              <div class="payment-option" data-method="Visa / Mastercard">
+                <span class="pay-icon">💳</span> Card Payment
+              </div>
+              <div class="payment-option" data-method="PayPal">
+                <span class="pay-icon">🅿️</span> PayPal
+              </div>
+              <div class="payment-option" data-method="Cash on Arrival">
+                <span class="pay-icon">💵</span> Cash on Arrival
+              </div>
+            </div>
+
+
+            <h4 style="font-size:1rem;font-weight:700;margin:28px 0 12px;color:var(--black);">Where should we send your booking? <span class="required" style="color:var(--orange);">*</span></h4>
+            <p style="font-size:0.85rem;color:var(--gray-dark);margin-bottom:14px;">Choose WhatsApp number or Email. After booking we will open WhatsApp with your details ready to send.</p>
+
+            <div class="contact-options" id="contactOptions">
+              <div class="contact-option" data-type="whatsapp" data-number="256777271601" data-label="WhatsApp Uganda">
+                <div class="c-icon">💬</div>
+                <div class="c-text">
+                  <strong>WhatsApp – Uganda</strong>
+                  <span>+256 777 271 601</span>
+                </div>
+              </div>
+              <div class="contact-option" data-type="whatsapp" data-number="4542520308" data-label="WhatsApp International">
+                <div class="c-icon">💬</div>
+                <div class="c-text">
+                  <strong>WhatsApp – International</strong>
+                  <span>+45 4252 0308</span>
+                </div>
+              </div>
+              <div class="contact-option" data-type="email" data-number="viatrixtoursandtravelco@gmail.com" data-label="Email">
+                <div class="c-icon email">✉️</div>
+                <div class="c-text">
+                  <strong>Email Notification</strong>
+                  <span>viatrixtoursandtravelco@gmail.com</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top:20px;">
+              <label>
+                <input type="checkbox" id="agreeTerms" style="width:auto;margin-right:8px;">
+                I agree to the <a href="#terms" style="color:var(--green);font-weight:600;">Terms of Service</a> and
+                <a href="#privacy" style="color:var(--green);font-weight:600;">Privacy Policy</a>
+                <span class="required">*</span>
+              </label>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-outline" id="backTo2">← Back</button>
+              <button type="button" class="btn btn-orange" id="toStep4">Review Booking →</button>
+            </div>
+          </div>
+
+          <!-- STEP 4 -->
+          <div class="booking-card step-panel" id="step4" style="display:none;">
+            <h3 class="card-title"><span class="icon">✅</span> Confirm Your Booking</h3>
+            <p class="card-subtitle">Please review all details carefully before submitting.</p>
+
+            <div id="confirmDetails" style="background:var(--white-soft);border-radius:12px;padding:24px;margin-bottom:25px;"></div>
+            <div class="form-message" id="formMessage"></div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-outline" id="backTo3">← Back</button>
+              <button type="button" class="btn btn-green" id="submitBooking">Confirm & Submit Booking</button>
+            </div>
+          </div>
+
+          <!-- SUCCESS -->
+          <div class="booking-card success-panel" id="successPanel">
+            <div class="success-icon">✓</div>
+            <h2>Booking Submitted!</h2>
+            <p>Thank you for choosing Viatrix Tours & Travel. We have received your booking request and will contact you within 24 hours to confirm.</p>
+            <div class="success-ref" id="bookingRef">VT-000000</div>
+            <div id="whatsappAction" style="margin:20px 0;"></div>
+            <br>
+            <a href="index.html" class="btn btn-orange">Return to Home</a>
+          </div>
+
+        </div>
+
+        <!-- SUMMARY SIDEBAR -->
+        <aside class="summary-card" id="summaryCard">
+          <h3>Booking Summary</h3>
+          <div class="summary-row">
+            <span class="label">Tour</span>
+            <span class="value" id="sumTour">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Dates</span>
+            <span class="value" id="sumDates">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Guests</span>
+            <span class="value" id="sumGuests">2</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Payment</span>
+            <span class="value" id="sumPayment">—</span>
+          </div>
+          <div class="summary-divider"></div>
+          <div class="summary-row">
+            <span class="label">Est. Total</span>
+            <span class="value" id="sumSubtotal">$0</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Deposit (30%)</span>
+            <span class="value" id="sumDeposit">$0</span>
+          </div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span>Due Now</span>
+            <span class="total-price" id="sumTotal">$0</span>
+          </div>
+          <div class="summary-note">
+            A 30% deposit is required to secure your booking. The balance is due 14 days before departure.
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="booking-footer">
+    <div class="container">
+      <p>&copy; 2026 Viatrix Tours & Travel · Entebbe Kitala, Uganda ·
+        <a href="tel:+256777271601">+1800-1245-1210</a> ·
+        <a href="mailto:viatrixtoursandtravelco@gmail.com">viatrixtoursandtravelco@gmail.com</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    /* ============================================
+       VIATRIX TOURS – BOOKING SCRIPT
+       EmailJS + Firebase
+       ============================================ */
+
+    // ========== CONFIG – REPLACE WITH YOUR KEYS ==========
+    const EMAILJS_PUBLIC_KEY  = 'YOUR_EMAILJS_PUBLIC_KEY';
+    const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';
+    const EMAILJS_TEMPLATE_ID = 'YOUR_BOOKING_TEMPLATE_ID';
+
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+
+    // ========== STATE ==========
+    const state = {
+      tour: null, price: 0, startDate: '', endDate: '', guests: 2,
+      firstName: '', lastName: '', email: '', phone: '',
+      country: '', language: 'English', notes: '', payment: null, contactType: null, contactNumber: null, contactLabel: null, currentStep: 1
+    };
+
+    const stepPanels = {
+      1: document.getElementById('step1'),
+      2: document.getElementById('step2'),
+      3: document.getElementById('step3'),
+      4: document.getElementById('step4')
+    };
+    const stepIndicators = document.querySelectorAll('.step');
+
+    // Tour selection
+    document.querySelectorAll('.tour-option').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.tour-option').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        state.tour = card.dataset.tour;
+        state.price = parseFloat(card.dataset.price) || 0;
+        updateSummary();
+      });
+    });
+
+    // Payment selection
+    document.querySelectorAll('.payment-option').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.payment-option').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        state.payment = card.dataset.method;
+        updateSummary();
+      });
+    });
+
+    // Contact / WhatsApp destination selection
+    document.querySelectorAll('.contact-option').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.contact-option').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        state.contactType = card.dataset.type;
+        state.contactNumber = card.dataset.number;
+        state.contactLabel = card.dataset.label;
+      });
+    });
+
+    // Live updates
+    document.getElementById('guests').addEventListener('change', e => {
+      state.guests = parseInt(e.target.value) || 1;
+      updateSummary();
+    });
+    document.getElementById('startDate').addEventListener('change', e => {
+      state.startDate = e.target.value;
+      document.getElementById('endDate').min = e.target.value;
+      updateSummary();
+    });
+    document.getElementById('endDate').addEventListener('change', e => {
+      state.endDate = e.target.value;
+      updateSummary();
+    });
+
+    function updateSummary() {
+      document.getElementById('sumTour').textContent = state.tour || '—';
+      document.getElementById('sumGuests').textContent = state.guests + (state.guests === 1 ? ' Guest' : ' Guests');
+      if (state.startDate && state.endDate) {
+        document.getElementById('sumDates').textContent = formatDate(state.startDate) + ' → ' + formatDate(state.endDate);
+      } else if (state.startDate) {
+        document.getElementById('sumDates').textContent = formatDate(state.startDate) + ' → …';
+      } else {
+        document.getElementById('sumDates').textContent = '—';
+      }
+      document.getElementById('sumPayment').textContent = state.payment || '—';
+      const total = state.price * state.guests;
+      const deposit = Math.round(total * 0.3);
+      document.getElementById('sumSubtotal').textContent = '$' + total.toLocaleString();
+      document.getElementById('sumDeposit').textContent = '$' + deposit.toLocaleString();
+      document.getElementById('sumTotal').textContent = '$' + deposit.toLocaleString();
+    }
+
+    function formatDate(iso) {
+      if (!iso) return '';
+      const d = new Date(iso + 'T00:00:00');
+      return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function goToStep(n) {
+      Object.values(stepPanels).forEach(p => p.style.display = 'none');
+      document.getElementById('successPanel').classList.remove('show');
+      if (stepPanels[n]) stepPanels[n].style.display = 'block';
+      stepIndicators.forEach(s => {
+        const stepNum = parseInt(s.dataset.step);
+        s.classList.remove('active', 'completed');
+        if (stepNum === n) s.classList.add('active');
+        else if (stepNum < n) s.classList.add('completed');
+      });
+      state.currentStep = n;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.getElementById('toStep2').addEventListener('click', () => {
+      if (!state.tour) { alert('Please select a tour.'); return; }
+      if (!document.getElementById('startDate').value || !document.getElementById('endDate').value) {
+        alert('Please select start and end dates.'); return;
+      }
+      if (document.getElementById('endDate').value < document.getElementById('startDate').value) {
+        alert('End date must be after start date.'); return;
+      }
+      state.startDate = document.getElementById('startDate').value;
+      state.endDate = document.getElementById('endDate').value;
+      state.guests = parseInt(document.getElementById('guests').value) || 2;
+      updateSummary();
+      goToStep(2);
+    });
+
+    document.getElementById('backTo1').addEventListener('click', () => goToStep(1));
+
+    document.getElementById('toStep3').addEventListener('click', () => {
+      const firstName = document.getElementById('firstName').value.trim();
+      const lastName = document.getElementById('lastName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      if (!firstName || !lastName || !email || !phone) {
+        alert('Please fill in all required fields (Name, Email, Phone).'); return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        alert('Please enter a valid email address.'); return;
+      }
+      state.firstName = firstName;
+      state.lastName = lastName;
+      state.email = email;
+      state.phone = phone;
+      state.country = document.getElementById('country').value.trim();
+      state.language = document.getElementById('language').value;
+      state.notes = document.getElementById('notes').value.trim();
+      goToStep(3);
+    });
+
+    document.getElementById('backTo2').addEventListener('click', () => goToStep(2));
+
+    document.getElementById('toStep4').addEventListener('click', () => {
+      if (!state.payment) { alert('Please select a payment method.'); return; }
+      if (!state.contactType) { alert('Please choose where we should send your booking (WhatsApp or Email).'); return; }
+      if (!document.getElementById('agreeTerms').checked) {
+        alert('Please agree to the Terms of Service and Privacy Policy.'); return;
+      }
+      buildConfirmDetails();
+      goToStep(4);
+    });
+
+    document.getElementById('backTo3').addEventListener('click', () => goToStep(3));
+
+    function buildConfirmDetails() {
+      const total = state.price * state.guests;
+      const deposit = Math.round(total * 0.3);
+      document.getElementById('confirmDetails').innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:0.92rem;">
+          <div><strong style="color:var(--gray-dark);">Tour</strong><br>${state.tour}</div>
+          <div><strong style="color:var(--gray-dark);">Guests</strong><br>${state.guests}</div>
+          <div><strong style="color:var(--gray-dark);">Start Date</strong><br>${formatDate(state.startDate)}</div>
+          <div><strong style="color:var(--gray-dark);">End Date</strong><br>${formatDate(state.endDate)}</div>
+          <div><strong style="color:var(--gray-dark);">Name</strong><br>${state.firstName} ${state.lastName}</div>
+          <div><strong style="color:var(--gray-dark);">Email</strong><br>${state.email}</div>
+          <div><strong style="color:var(--gray-dark);">Phone</strong><br>${state.phone}</div>
+          <div><strong style="color:var(--gray-dark);">Payment</strong><br>${state.payment}</div>
+          <div><strong style="color:var(--gray-dark);">Notify Via</strong><br>${state.contactLabel || '—'} (${state.contactNumber || ''})</div>
+          <div><strong style="color:var(--gray-dark);">Est. Total</strong><br>$${total.toLocaleString()}</div>
+          <div><strong style="color:var(--orange);">Deposit Due</strong><br><span style="font-size:1.2rem;font-weight:700;color:var(--orange);">$${deposit.toLocaleString()}</span></div>
+        </div>
+        ${state.notes ? `<div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--gray);"><strong style="color:var(--gray-dark);">Notes</strong><br>${state.notes}</div>` : ''}
+      `;
+    }
+
+    document.getElementById('submitBooking').addEventListener('click', async () => {
+      const btn = document.getElementById('submitBooking');
+      const msg = document.getElementById('formMessage');
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+      msg.className = 'form-message';
+      msg.textContent = '';
+
+      const total = state.price * state.guests;
+      const deposit = Math.round(total * 0.3);
+      const ref = 'VT-' + Date.now().toString(36).toUpperCase();
+
+      const bookingData = {
+        reference: ref,
+        tour: state.tour,
+        pricePerPerson: state.price,
+        guests: state.guests,
+        total, deposit,
+        startDate: state.startDate,
+        endDate: state.endDate,
+        firstName: state.firstName,
+        lastName: state.lastName,
+        email: state.email,
+        phone: state.phone,
+        country: state.country || '',
+        language: state.language,
+        notes: state.notes || '',
+        paymentMethod: state.payment,
+        notifyVia: state.contactType,
+        notifyTo: state.contactNumber,
+        notifyLabel: state.contactLabel,
+        status: 'pending',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      try {
+        await db.collection('bookings').add(bookingData);
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+          booking_ref: ref,
+          tour: state.tour,
+          guests: state.guests,
+          start_date: formatDate(state.startDate),
+          end_date: formatDate(state.endDate),
+          from_name: state.firstName + ' ' + state.lastName,
+          from_email: state.email,
+          phone: state.phone,
+          country: state.country || 'N/A',
+          payment_method: state.payment,
+          total: '$' + total.toLocaleString(),
+          deposit: '$' + deposit.toLocaleString(),
+          notes: state.notes || 'None',
+          message: `New booking request from ${state.firstName} ${state.lastName} for ${state.tour}.`
+        });
+
+        document.getElementById('bookingRef').textContent = ref;
+        Object.values(stepPanels).forEach(p => p.style.display = 'none');
+        document.getElementById('successPanel').classList.add('show');
+        document.getElementById('summaryCard').style.display = 'none';
+        stepIndicators.forEach(s => { s.classList.remove('active'); s.classList.add('completed'); });
+
+        // Build WhatsApp / Email action
+        const waBox = document.getElementById('whatsappAction');
+        const msgText = `Hello Viatrix Tours!%0A%0A*New Booking Request*%0A%0A*Ref:* ${ref}%0A*Tour:* ${state.tour}%0A*Guests:* ${state.guests}%0A*Dates:* ${formatDate(state.startDate)} to ${formatDate(state.endDate)}%0A*Name:* ${state.firstName} ${state.lastName}%0A*Phone:* ${state.phone}%0A*Email:* ${state.email}%0A*Payment:* ${state.payment}%0A*Deposit:* $${deposit}%0A*Notes:* ${state.notes || 'None'}`;
+
+        if (state.contactType === 'whatsapp' && state.contactNumber) {
+          const waUrl = `https://wa.me/${state.contactNumber}?text=${msgText}`;
+          waBox.innerHTML = `
+            <p style="margin-bottom:12px;color:#666;font-size:0.9rem;">Open WhatsApp to send your booking details to <strong>${state.contactLabel}</strong>:</p>
+            <a href="${waUrl}" target="_blank" class="btn btn-green" style="background:#25D366;">
+              💬 Send on WhatsApp – ${state.contactLabel}
+            </a>`;
+          // Auto-open WhatsApp after short delay
+          setTimeout(() => { window.open(waUrl, '_blank'); }, 800);
+        } else {
+          waBox.innerHTML = `
+            <p style="margin-bottom:12px;color:#666;font-size:0.9rem;">Booking details have been sent by email. You can also chat with us on WhatsApp:</p>
+            <a href="https://wa.me/256777271601?text=${msgText}" target="_blank" class="btn btn-green" style="background:#25D366;">
+              💬 Chat on WhatsApp
+            </a>`;
+        }
+      } catch (error) {
+        console.error('Booking error:', error);
+        msg.textContent = 'Something went wrong. Please try again or contact us on WhatsApp.';
+        msg.className = 'form-message error';
+        btn.disabled = false;
+        btn.textContent = 'Confirm & Submit Booking';
+      }
+    });
+
+    // Init
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('startDate').min = today;
+    document.getElementById('endDate').min = today;
+    updateSummary();
+  </script>
+</body>
+</html>
