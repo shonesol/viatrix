@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cloudinary Gallery</title>
+  <title>Cloudinary Media Gallery</title>
   <style>
     :root {
       --bg: #0c0c0e;
@@ -34,7 +34,7 @@
 
     header {
       border-bottom: 1px solid var(--border);
-      background: rgba(12, 12, 14, 0.85);
+      background: rgba(12, 12, 14, 0.9);
       backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
@@ -42,12 +42,13 @@
     }
 
     .header-inner {
-      max-width: 1120px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 18px 24px;
+      padding: 16px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 16px;
     }
 
     .brand {
@@ -70,39 +71,66 @@
     }
 
     .brand h1 {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 600;
       letter-spacing: -0.02em;
     }
 
     .brand span {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--text-muted);
-      font-weight: 400;
+    }
+
+    .admin-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .admin-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .admin-btn.logged-in {
+      border-color: var(--success);
+      color: var(--success);
     }
 
     .container {
-      max-width: 1120px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 40px 24px 80px;
+      padding: 36px 24px 80px;
     }
 
     .section-title {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       color: var(--text-muted);
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
+
+    /* Admin lock / Upload */
+    #adminPanel {
+      display: none;
+      margin-bottom: 48px;
+    }
+
+    #adminPanel.visible { display: block; }
 
     .upload-box {
       border: 1.5px dashed var(--border);
       border-radius: var(--radius);
-      padding: 48px 24px;
+      padding: 40px 24px;
       text-align: center;
       background: var(--surface);
-      margin-bottom: 48px;
       transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
     }
 
@@ -118,7 +146,7 @@
     .upload-icon {
       width: 48px;
       height: 48px;
-      margin: 0 auto 16px;
+      margin: 0 auto 14px;
       background: rgba(59, 130, 246, 0.12);
       border-radius: 12px;
       display: flex;
@@ -136,7 +164,7 @@
     .upload-box .hint {
       font-size: 0.8rem;
       color: #71717a;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     #fileInput { display: none; }
@@ -145,7 +173,7 @@
       background: var(--accent);
       color: white;
       border: none;
-      padding: 11px 28px;
+      padding: 11px 26px;
       border-radius: 8px;
       font-size: 0.95rem;
       font-weight: 500;
@@ -157,7 +185,6 @@
     }
 
     .upload-btn:hover:not(:disabled) { background: var(--accent-hover); }
-    .upload-btn:active:not(:disabled) { transform: scale(0.98); }
     .upload-btn:disabled {
       background: #3f3f46;
       cursor: not-allowed;
@@ -165,9 +192,9 @@
     }
 
     #status {
-      margin-top: 18px;
+      margin-top: 16px;
       font-size: 0.9rem;
-      min-height: 24px;
+      min-height: 22px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -184,7 +211,7 @@
       height: 4px;
       background: #27272a;
       border-radius: 2px;
-      margin: 14px auto 0;
+      margin: 12px auto 0;
       overflow: hidden;
       display: none;
     }
@@ -197,11 +224,16 @@
       transition: width 0.3s ease;
     }
 
+    /* Gallery sections */
+    .gallery-section {
+      margin-bottom: 48px;
+    }
+
     .gallery-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       gap: 12px;
       flex-wrap: wrap;
     }
@@ -215,12 +247,15 @@
       background: transparent;
       border: 1px solid var(--border);
       color: var(--text-muted);
-      padding: 6px 14px;
+      padding: 5px 12px;
       border-radius: 6px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       cursor: pointer;
       transition: all 0.2s;
+      display: none; /* only visible when admin */
     }
+
+    .clear-btn.visible { display: inline-block; }
 
     .clear-btn:hover {
       border-color: var(--error);
@@ -229,8 +264,8 @@
 
     .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
     }
 
     .gallery-item {
@@ -250,7 +285,8 @@
       border-color: #3f3f46;
     }
 
-    .gallery-item img {
+    .gallery-item img,
+    .gallery-item video {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -258,23 +294,24 @@
       transition: transform 0.4s ease;
     }
 
-    .gallery-item:hover img { transform: scale(1.05); }
+    .gallery-item:hover img,
+    .gallery-item:hover video { transform: scale(1.05); }
 
     .gallery-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 50%);
+      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%);
       opacity: 0;
       transition: opacity 0.25s;
       display: flex;
       align-items: flex-end;
-      padding: 14px;
+      padding: 12px;
     }
 
     .gallery-item:hover .gallery-overlay { opacity: 1; }
 
     .gallery-overlay span {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: #e4e4e7;
       white-space: nowrap;
       overflow: hidden;
@@ -282,37 +319,46 @@
       width: 100%;
     }
 
+    .video-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
     .empty-state {
       grid-column: 1 / -1;
       text-align: center;
-      padding: 64px 24px;
+      padding: 48px 20px;
       color: var(--text-muted);
       border: 1px dashed var(--border);
       border-radius: var(--radius);
       background: var(--surface);
     }
 
-    .empty-state svg {
-      margin-bottom: 16px;
-      opacity: 0.5;
-    }
+    .empty-state p { font-size: 0.9rem; }
 
-    .empty-state p { font-size: 0.95rem; }
-
-    #lightbox {
+    /* Lightbox / Viewer */
+    #viewer {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.92);
+      background: rgba(0, 0, 0, 0.95);
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 1000;
+      z-index: 2000;
       flex-direction: column;
-      padding: 24px;
-      backdrop-filter: blur(8px);
+      padding: 20px;
     }
 
-    #lightbox.open {
+    #viewer.open {
       display: flex;
       animation: fadeIn 0.2s ease;
     }
@@ -322,44 +368,167 @@
       to { opacity: 1; }
     }
 
-    #lightbox img {
-      max-width: min(92vw, 1100px);
-      max-height: 80vh;
-      border-radius: 10px;
-      object-fit: contain;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    .viewer-content {
+      position: relative;
+      max-width: 92vw;
+      max-height: 82vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    #lightboxCaption {
-      margin-top: 18px;
+    #viewerMedia {
+      max-width: 92vw;
+      max-height: 78vh;
+      border-radius: 10px;
+      object-fit: contain;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    #viewerMedia video {
+      max-width: 92vw;
+      max-height: 78vh;
+      border-radius: 10px;
+    }
+
+    .viewer-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 50%;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      user-select: none;
+    }
+
+    .viewer-nav:hover { background: rgba(255,255,255,0.2); }
+
+    .viewer-prev { left: -60px; }
+    .viewer-next { right: -60px; }
+
+    @media (max-width: 900px) {
+      .viewer-prev { left: 8px; }
+      .viewer-next { right: 8px; }
+    }
+
+    #viewerCaption {
+      margin-top: 16px;
       color: #d4d4d8;
       font-size: 0.95rem;
-      max-width: 90vw;
       text-align: center;
     }
 
-    .lightbox-close {
+    #viewerCounter {
+      margin-top: 6px;
+      color: #71717a;
+      font-size: 0.8rem;
+    }
+
+    .viewer-close {
       position: absolute;
-      top: 20px;
-      right: 24px;
+      top: 18px;
+      right: 22px;
       width: 44px;
       height: 44px;
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       color: #a1a1aa;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 10px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.2s, color 0.2s;
-      line-height: 1;
+      transition: all 0.2s;
     }
 
-    .lightbox-close:hover {
-      background: rgba(255, 255, 255, 0.12);
+    .viewer-close:hover {
+      background: rgba(255,255,255,0.12);
       color: white;
+    }
+
+    /* Login modal */
+    #loginModal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+    }
+
+    #loginModal.open { display: flex; }
+
+    .login-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 32px;
+      width: 90%;
+      max-width: 360px;
+      text-align: center;
+    }
+
+    .login-box h2 {
+      font-size: 1.15rem;
+      margin-bottom: 8px;
+    }
+
+    .login-box p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+      margin-bottom: 16px;
+      outline: none;
+    }
+
+    .login-box input:focus { border-color: var(--accent); }
+
+    .login-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .login-actions button {
+      flex: 1;
+      padding: 11px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover { background: var(--accent-hover); }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border) !important;
+      color: var(--text-muted);
     }
 
     .spinner {
@@ -376,17 +545,15 @@
     }
 
     .footer-note {
-      margin-top: 48px;
+      margin-top: 40px;
       text-align: center;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: #52525b;
     }
 
     @media (max-width: 600px) {
-      .container { padding: 28px 16px 60px; }
-      .header-inner { padding: 14px 16px; }
-      .upload-box { padding: 36px 16px; }
-      .gallery { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+      .container { padding: 24px 16px 60px; }
+      .gallery { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
     }
   </style>
 </head>
@@ -396,118 +563,211 @@
       <div class="brand">
         <div class="brand-icon">G</div>
         <div>
-          <h1>Photo Gallery</h1>
-          <span>Powered by Cloudinary</span>
+          <h1>Media Gallery</h1>
+          <span>Photos & Videos · Cloudinary</span>
         </div>
       </div>
+      <button class="admin-btn" id="adminToggle">Admin Login</button>
     </div>
   </header>
 
   <div class="container">
-    <p class="section-title">Upload</p>
-
-    <div class="upload-box" id="uploadBox">
-      <div class="upload-icon">
-        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-          <path d="M12 16V4m0 0l-4 4m4-4l4 4"/>
-          <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
-        </svg>
-      </div>
-      <p>Drag & drop images here</p>
-      <p class="hint">or click the button · PNG, JPG, WEBP, GIF</p>
-      <input type="file" id="fileInput" accept="image/*" multiple>
-      <button class="upload-btn" id="uploadBtn">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path d="M12 4v16m8-8H4"/>
-        </svg>
-        Choose Photos
-      </button>
-      <div id="status" class="status-info"></div>
-      <div class="progress-wrap" id="progressWrap">
-        <div class="progress-bar" id="progressBar"></div>
-      </div>
-    </div>
-
-    <div class="gallery-header">
-      <p class="section-title" style="margin:0">Gallery</p>
-      <div style="display:flex; align-items:center; gap:12px;">
-        <span class="image-count" id="imageCount">0 images</span>
-        <button class="clear-btn" id="clearBtn" title="Remove all from this device">Clear gallery</button>
+    <!-- Admin-only upload panel -->
+    <div id="adminPanel">
+      <p class="section-title">Admin Upload</p>
+      <div class="upload-box" id="uploadBox">
+        <div class="upload-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path d="M12 16V4m0 0l-4 4m4-4l4 4"/>
+            <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
+          </svg>
+        </div>
+        <p>Drag & drop photos or videos</p>
+        <p class="hint">PNG, JPG, WEBP, GIF, MP4, MOV, WEBM</p>
+        <input type="file" id="fileInput" accept="image/*,video/*" multiple>
+        <button class="upload-btn" id="uploadBtn">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M12 4v16m8-8H4"/>
+          </svg>
+          Choose Files
+        </button>
+        <div id="status" class="status-info"></div>
+        <div class="progress-wrap" id="progressWrap">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
       </div>
     </div>
 
-    <div class="gallery" id="gallery">
-      <div class="empty-state" id="emptyState">
-        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-          <rect x="3" y="3" width="18" height="18" rx="2"/>
-          <circle cx="8.5" cy="8.5" r="1.5"/>
-          <path d="M21 15l-5-5L5 21"/>
-        </svg>
-        <p>No images yet. Upload your first photo above.</p>
+    <!-- Photos -->
+    <div class="gallery-section">
+      <div class="gallery-header">
+        <p class="section-title" style="margin:0">Photos</p>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span class="image-count" id="photoCount">0 photos</span>
+          <button class="clear-btn" id="clearPhotosBtn">Clear photos</button>
+        </div>
+      </div>
+      <div class="gallery" id="photoGallery">
+        <div class="empty-state" id="photoEmpty">
+          <p>No photos yet.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Videos -->
+    <div class="gallery-section">
+      <div class="gallery-header">
+        <p class="section-title" style="margin:0">Videos</p>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span class="image-count" id="videoCount">0 videos</span>
+          <button class="clear-btn" id="clearVideosBtn">Clear videos</button>
+        </div>
+      </div>
+      <div class="gallery" id="videoGallery">
+        <div class="empty-state" id="videoEmpty">
+          <p>No videos yet.</p>
+        </div>
       </div>
     </div>
 
     <p class="footer-note">
-      Images are stored permanently on Cloudinary · Gallery list is saved in this browser
+      Media stored permanently on Cloudinary · Gallery list saved in this browser · Only admin can upload
     </p>
   </div>
 
-  <!-- Lightbox -->
-  <div id="lightbox">
-    <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
-    <img id="lightboxImage" src="" alt="">
-    <div id="lightboxCaption"></div>
+  <!-- Full viewer -->
+  <div id="viewer">
+    <button class="viewer-close" id="viewerClose" aria-label="Close">&times;</button>
+    <div class="viewer-content">
+      <button class="viewer-nav viewer-prev" id="viewerPrev">‹</button>
+      <div id="viewerMedia"></div>
+      <button class="viewer-nav viewer-next" id="viewerNext">›</button>
+    </div>
+    <div id="viewerCaption"></div>
+    <div id="viewerCounter"></div>
+  </div>
+
+  <!-- Admin login modal -->
+  <div id="loginModal">
+    <div class="login-box">
+      <h2>Admin Access</h2>
+      <p>Enter the admin password to unlock uploading.</p>
+      <input type="password" id="adminPassword" placeholder="Password" autocomplete="off">
+      <div class="login-actions">
+        <button class="btn-secondary" id="loginCancel">Cancel</button>
+        <button class="btn-primary" id="loginSubmit">Unlock</button>
+      </div>
+    </div>
   </div>
 
   <script>
     // ========================================
-    //  CONFIG – change only these
+    // CONFIG – change these
     // ========================================
-    const CLOUD_NAME     = "ziudh5iv";
-    const UPLOAD_PRESET  = "viatrix_gallery";
-    const STORAGE_KEY    = "cloudinary_gallery_images";   // localStorage key
+    const CLOUD_NAME    = "ziudh5iv";
+    const UPLOAD_PRESET = "viatrix_gallery";
+    const ADMIN_PASSWORD = "admin123";          // ← change this password!
+    const PHOTO_KEY     = "gallery_photos";
+    const VIDEO_KEY     = "gallery_videos";
 
     // ========================================
     // Elements
     // ========================================
-    const fileInput       = document.getElementById("fileInput");
-    const uploadBtn       = document.getElementById("uploadBtn");
-    const uploadBox       = document.getElementById("uploadBox");
-    const statusEl        = document.getElementById("status");
-    const gallery         = document.getElementById("gallery");
-    const emptyState      = document.getElementById("emptyState");
-    const imageCountEl    = document.getElementById("imageCount");
-    const clearBtn        = document.getElementById("clearBtn");
-    const progressWrap    = document.getElementById("progressWrap");
-    const progressBar     = document.getElementById("progressBar");
-    const lightbox        = document.getElementById("lightbox");
-    const lightboxImage   = document.getElementById("lightboxImage");
-    const lightboxCaption = document.getElementById("lightboxCaption");
-    const closeBtn        = document.getElementById("lightboxClose");
+    const adminToggle   = document.getElementById("adminToggle");
+    const adminPanel    = document.getElementById("adminPanel");
+    const loginModal    = document.getElementById("loginModal");
+    const adminPassword = document.getElementById("adminPassword");
+    const loginSubmit   = document.getElementById("loginSubmit");
+    const loginCancel   = document.getElementById("loginCancel");
+
+    const fileInput     = document.getElementById("fileInput");
+    const uploadBtn     = document.getElementById("uploadBtn");
+    const uploadBox     = document.getElementById("uploadBox");
+    const statusEl      = document.getElementById("status");
+    const progressWrap  = document.getElementById("progressWrap");
+    const progressBar   = document.getElementById("progressBar");
+
+    const photoGallery  = document.getElementById("photoGallery");
+    const videoGallery  = document.getElementById("videoGallery");
+    const photoEmpty    = document.getElementById("photoEmpty");
+    const videoEmpty    = document.getElementById("videoEmpty");
+    const photoCountEl  = document.getElementById("photoCount");
+    const videoCountEl  = document.getElementById("videoCount");
+    const clearPhotosBtn = document.getElementById("clearPhotosBtn");
+    const clearVideosBtn = document.getElementById("clearVideosBtn");
+
+    const viewer        = document.getElementById("viewer");
+    const viewerMedia   = document.getElementById("viewerMedia");
+    const viewerCaption = document.getElementById("viewerCaption");
+    const viewerCounter = document.getElementById("viewerCounter");
+    const viewerClose   = document.getElementById("viewerClose");
+    const viewerPrev    = document.getElementById("viewerPrev");
+    const viewerNext    = document.getElementById("viewerNext");
+
+    let isAdmin = false;
+    let currentList = [];   // current list being viewed (photos or videos)
+    let currentIndex = 0;
 
     // ========================================
-    // Persistence helpers
+    // Storage helpers
     // ========================================
-    function loadSavedImages() {
+    function loadList(key) {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+        const raw = localStorage.getItem(key);
         return raw ? JSON.parse(raw) : [];
-      } catch {
-        return [];
+      } catch { return []; }
+    }
+
+    function saveList(key, list) {
+      localStorage.setItem(key, JSON.stringify(list));
+    }
+
+    function addItem(key, item) {
+      const list = loadList(key);
+      if (list.some(i => i.url === item.url)) return;
+      list.unshift(item);
+      saveList(key, list);
+    }
+
+    // ========================================
+    // Admin login
+    // ========================================
+    function setAdminState(loggedIn) {
+      isAdmin = loggedIn;
+      adminPanel.classList.toggle("visible", loggedIn);
+      adminToggle.textContent = loggedIn ? "Logout Admin" : "Admin Login";
+      adminToggle.classList.toggle("logged-in", loggedIn);
+      clearPhotosBtn.classList.toggle("visible", loggedIn);
+      clearVideosBtn.classList.toggle("visible", loggedIn);
+    }
+
+    adminToggle.addEventListener("click", () => {
+      if (isAdmin) {
+        setAdminState(false);
+        setStatus("Admin logged out", "info");
+      } else {
+        loginModal.classList.add("open");
+        adminPassword.value = "";
+        adminPassword.focus();
       }
-    }
+    });
 
-    function saveImages(list) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-    }
+    loginCancel.addEventListener("click", () => loginModal.classList.remove("open"));
 
-    function addToStorage(url, title) {
-      const list = loadSavedImages();
-      // avoid duplicates
-      if (list.some(item => item.url === url)) return;
-      list.unshift({ url, title, addedAt: Date.now() });
-      saveImages(list);
-    }
+    loginSubmit.addEventListener("click", () => {
+      if (adminPassword.value === ADMIN_PASSWORD) {
+        setAdminState(true);
+        loginModal.classList.remove("open");
+        setStatus("Admin unlocked – you can now upload", "success");
+      } else {
+        alert("Incorrect password");
+        adminPassword.focus();
+      }
+    });
+
+    adminPassword.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") loginSubmit.click();
+    });
 
     // ========================================
     // UI helpers
@@ -517,89 +777,111 @@
       statusEl.innerHTML = msg;
     }
 
-    function updateCount(count) {
-      imageCountEl.textContent = `${count} image${count !== 1 ? "s" : ""}`;
-      emptyState.style.display = count === 0 ? "block" : "none";
-    }
-
-    function thumbUrl(url) {
+    function thumbUrl(url, isVideo = false) {
+      if (isVideo) {
+        // Cloudinary video thumbnail
+        return url.replace("/upload/", "/upload/so_0,w_420,h_420,c_fill,q_auto,f_jpg/");
+      }
       return url.replace("/upload/", "/upload/c_fill,w_420,h_420,q_auto,f_auto/");
     }
 
     // ========================================
-    // Gallery rendering
+    // Render galleries
     // ========================================
-    function createGalleryItem(url, title) {
-      const item = document.createElement("div");
-      item.className = "gallery-item";
-      item.innerHTML = `
-        <img src="${thumbUrl(url)}" alt="${title || "Image"}" loading="lazy">
-        <div class="gallery-overlay">
-          <span>${title || "Untitled"}</span>
-        </div>
-      `;
-      item.addEventListener("click", () => openLightbox(url, title));
-      return item;
+    function createItem(item, type) {
+      const el = document.createElement("div");
+      el.className = "gallery-item";
+      const isVideo = type === "video";
+
+      if (isVideo) {
+        el.innerHTML = `
+          <img src="${thumbUrl(item.url, true)}" alt="${item.title || "Video"}" loading="lazy">
+          <div class="video-badge">▶ Video</div>
+          <div class="gallery-overlay"><span>${item.title || "Untitled"}</span></div>
+        `;
+      } else {
+        el.innerHTML = `
+          <img src="${thumbUrl(item.url)}" alt="${item.title || "Photo"}" loading="lazy">
+          <div class="gallery-overlay"><span>${item.title || "Untitled"}</span></div>
+        `;
+      }
+
+      el.addEventListener("click", () => openViewer(type, item.url));
+      return el;
     }
 
-    function renderGallery() {
-      const list = loadSavedImages();
-      // remove existing items (keep empty state)
-      gallery.querySelectorAll(".gallery-item").forEach(el => el.remove());
+    function renderPhotos() {
+      const list = loadList(PHOTO_KEY);
+      photoGallery.querySelectorAll(".gallery-item").forEach(el => el.remove());
+      list.forEach(item => photoGallery.appendChild(createItem(item, "photo")));
+      photoCountEl.textContent = `${list.length} photo${list.length !== 1 ? "s" : ""}`;
+      photoEmpty.style.display = list.length === 0 ? "block" : "none";
+    }
 
-      list.forEach(({ url, title }) => {
-        gallery.appendChild(createGalleryItem(url, title));
-      });
+    function renderVideos() {
+      const list = loadList(VIDEO_KEY);
+      videoGallery.querySelectorAll(".gallery-item").forEach(el => el.remove());
+      list.forEach(item => videoGallery.appendChild(createItem(item, "video")));
+      videoCountEl.textContent = `${list.length} video${list.length !== 1 ? "s" : ""}`;
+      videoEmpty.style.display = list.length === 0 ? "block" : "none";
+    }
 
-      updateCount(list.length);
+    function renderAll() {
+      renderPhotos();
+      renderVideos();
     }
 
     // ========================================
     // Upload
     // ========================================
-    async function uploadToCloudinary(file) {
-      if (!file || !file.type.startsWith("image/")) {
-        setStatus("Please select a valid image file.", "error");
+    async function uploadFile(file) {
+      const isVideo = file.type.startsWith("video/");
+      const isImage = file.type.startsWith("image/");
+
+      if (!isImage && !isVideo) {
+        setStatus("Only images and videos are allowed.", "error");
         return;
       }
 
       setStatus(`<span class="spinner"></span> Uploading ${file.name}…`, "info");
       uploadBtn.disabled = true;
       progressWrap.style.display = "block";
-      progressBar.style.width = "30%";
+      progressBar.style.width = "25%";
 
       const formData = new FormData();
       formData.append("file", file);
       formData.append("upload_preset", UPLOAD_PRESET);
 
+      const resourceType = isVideo ? "video" : "image";
+
       try {
-        const progressTimer = setInterval(() => {
-          const current = parseFloat(progressBar.style.width);
-          if (current < 85) progressBar.style.width = current + 12 + "%";
-        }, 200);
+        const timer = setInterval(() => {
+          const cur = parseFloat(progressBar.style.width);
+          if (cur < 80) progressBar.style.width = cur + 10 + "%";
+        }, 250);
 
         const res = await fetch(
-          `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+          `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${resourceType}/upload`,
           { method: "POST", body: formData }
         );
 
-        clearInterval(progressTimer);
+        clearInterval(timer);
         progressBar.style.width = "100%";
 
         const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || "Upload failed");
 
-        if (!res.ok) {
-          throw new Error(data.error?.message || "Upload failed");
+        const item = { url: data.secure_url, title: file.name, addedAt: Date.now() };
+
+        if (isVideo) {
+          addItem(VIDEO_KEY, item);
+          renderVideos();
+        } else {
+          addItem(PHOTO_KEY, item);
+          renderPhotos();
         }
 
-        // 1. Save permanently in browser
-        addToStorage(data.secure_url, file.name);
-
-        // 2. Show immediately
-        gallery.prepend(createGalleryItem(data.secure_url, file.name));
-        updateCount(loadSavedImages().length);
-
-        setStatus("Upload successful – image saved permanently", "success");
+        setStatus(`Uploaded successfully (${isVideo ? "video" : "photo"})`, "success");
       } catch (err) {
         console.error(err);
         setStatus("Error: " + err.message, "error");
@@ -609,56 +891,114 @@
         setTimeout(() => {
           progressWrap.style.display = "none";
           progressBar.style.width = "0%";
-        }, 600);
+        }, 500);
       }
     }
 
     async function handleFiles(files) {
-      const list = Array.from(files).filter(f => f.type.startsWith("image/"));
-      if (!list.length) {
-        setStatus("No valid image files selected.", "error");
+      const valid = Array.from(files).filter(f =>
+        f.type.startsWith("image/") || f.type.startsWith("video/")
+      );
+      if (!valid.length) {
+        setStatus("No valid media files selected.", "error");
         return;
       }
-      for (const file of list) {
-        await uploadToCloudinary(file);
+      for (const file of valid) {
+        await uploadFile(file);
       }
     }
 
     // ========================================
-    // Lightbox
+    // Full viewer with next / prev
     // ========================================
-    function openLightbox(url, title) {
-      lightboxImage.src = url;
-      lightboxCaption.textContent = title || "";
-      lightbox.classList.add("open");
+    function openViewer(type, url) {
+      currentList = type === "video" ? loadList(VIDEO_KEY) : loadList(PHOTO_KEY);
+      currentIndex = currentList.findIndex(i => i.url === url);
+      if (currentIndex < 0) currentIndex = 0;
+      showCurrent();
+      viewer.classList.add("open");
       document.body.style.overflow = "hidden";
     }
 
-    function closeLightbox() {
-      lightbox.classList.remove("open");
-      document.body.style.overflow = "";
+    function showCurrent() {
+      if (!currentList.length) return;
+      const item = currentList[currentIndex];
+      const isVideo = item.url.includes("/video/") || /\.(mp4|mov|webm|mkv)(\?|$)/i.test(item.url);
+
+      viewerMedia.innerHTML = "";
+      if (isVideo) {
+        const video = document.createElement("video");
+        video.src = item.url;
+        video.controls = true;
+        video.autoplay = true;
+        video.style.maxWidth = "92vw";
+        video.style.maxHeight = "78vh";
+        video.style.borderRadius = "10px";
+        viewerMedia.appendChild(video);
+      } else {
+        const img = document.createElement("img");
+        img.src = item.url;
+        img.alt = item.title || "";
+        img.id = "viewerMedia";
+        viewerMedia.appendChild(img);
+      }
+
+      viewerCaption.textContent = item.title || "";
+      viewerCounter.textContent = `${currentIndex + 1} / ${currentList.length}`;
     }
 
-    closeBtn.addEventListener("click", closeLightbox);
-    lightbox.addEventListener("click", (e) => {
-      if (e.target === lightbox) closeLightbox();
+    function nextItem() {
+      if (!currentList.length) return;
+      currentIndex = (currentIndex + 1) % currentList.length;
+      showCurrent();
+    }
+
+    function prevItem() {
+      if (!currentList.length) return;
+      currentIndex = (currentIndex - 1 + currentList.length) % currentList.length;
+      showCurrent();
+    }
+
+    function closeViewer() {
+      viewer.classList.remove("open");
+      document.body.style.overflow = "";
+      // stop any playing video
+      const v = viewerMedia.querySelector("video");
+      if (v) v.pause();
+    }
+
+    viewerClose.addEventListener("click", closeViewer);
+    viewerNext.addEventListener("click", nextItem);
+    viewerPrev.addEventListener("click", prevItem);
+
+    viewer.addEventListener("click", (e) => {
+      if (e.target === viewer) closeViewer();
     });
+
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeLightbox();
+      if (!viewer.classList.contains("open")) return;
+      if (e.key === "Escape") closeViewer();
+      if (e.key === "ArrowRight") nextItem();
+      if (e.key === "ArrowLeft") prevItem();
     });
 
     // ========================================
-    // Clear gallery (only removes from this browser)
+    // Clear (admin only)
     // ========================================
-    clearBtn.addEventListener("click", () => {
-      if (!confirm("Remove all images from this gallery?\n(The files stay safely on Cloudinary)")) return;
-      localStorage.removeItem(STORAGE_KEY);
-      renderGallery();
-      setStatus("Gallery cleared from this device", "info");
+    clearPhotosBtn.addEventListener("click", () => {
+      if (!confirm("Clear all photos from this gallery?\n(Files remain on Cloudinary)")) return;
+      localStorage.removeItem(PHOTO_KEY);
+      renderPhotos();
+    });
+
+    clearVideosBtn.addEventListener("click", () => {
+      if (!confirm("Clear all videos from this gallery?\n(Files remain on Cloudinary)")) return;
+      localStorage.removeItem(VIDEO_KEY);
+      renderVideos();
     });
 
     // ========================================
-    // Events
+    // Upload events (only work when admin panel is visible)
     // ========================================
     uploadBtn.addEventListener("click", () => fileInput.click());
 
@@ -667,7 +1007,7 @@
     });
 
     ["dragenter", "dragover", "dragleave", "drop"].forEach(evt => {
-      uploadBox.addEventListener(evt, (e) => {
+      uploadBox.addEventListener(evt, e => {
         e.preventDefault();
         e.stopPropagation();
       });
@@ -675,15 +1015,15 @@
 
     uploadBox.addEventListener("dragover", () => uploadBox.classList.add("dragover"));
     uploadBox.addEventListener("dragleave", () => uploadBox.classList.remove("dragover"));
-    uploadBox.addEventListener("drop", (e) => {
+    uploadBox.addEventListener("drop", e => {
       uploadBox.classList.remove("dragover");
       if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
     });
 
     // ========================================
-    // Init – load previously saved images
+    // Init
     // ========================================
-    renderGallery();
+    renderAll();
   </script>
 </body>
 </html>
