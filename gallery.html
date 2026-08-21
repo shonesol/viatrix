@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gallery – Viatrix Tours & Travel</title>
 
-  <!-- Firebase -->
+  <!-- Firebase (Firestore only – for metadata) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -396,7 +395,7 @@
 
       <!-- ADMIN PANEL -->
       <div class="admin-panel" id="adminPanel">
-        <h3>🔐 Admin Upload</h3>
+        <h3>🔐 Admin Upload (Cloudinary)</h3>
         <div class="admin-form">
           <div class="form-group">
             <label>Type</label>
@@ -414,7 +413,7 @@
             <div class="file-drop" id="fileDrop">
               <input type="file" id="fileInput" accept="image/*,video/*" multiple>
               <strong>Click or drag files here</strong>
-              <p>Images (JPG, PNG, WebP) or Videos (MP4, WebM) · Max ~10MB recommended</p>
+              <p>Images (JPG, PNG, WebP) or Videos (MP4, WebM) · Max ~100 MB</p>
             </div>
             <div style="margin-top:10px;">
               <input type="url" id="urlInput" placeholder="Or paste image/video URL here...">
@@ -501,7 +500,7 @@
   </footer>
 
   <script>
-    /* ========== FIREBASE CONFIG – REPLACE WITH YOUR KEYS ========== */
+    /* ========== FIREBASE (Firestore only) ========== */
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -511,22 +510,27 @@
       appId: "YOUR_APP_ID"
     };
 
-    // Simple admin password (change this!)
+    // Change this password
     const ADMIN_PASSWORD = 'viatrix2026';
+
+    /* ========== CLOUDINARY ========== */
+    const CLOUDINARY = {
+      cloudName: 'ziudh5iv',              // ← your cloud name
+      uploadPreset: 'viatrix_gallery'     // ← unsigned preset name
+    };
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    const storage = firebase.storage();
 
     /* ========== STATE ========== */
     let photos = [];
     let videos = [];
     let isAdmin = false;
     let currentIndex = 0;
-    let lightboxMode = 'photo'; // photo | video
+    let lightboxMode = 'photo';
     let pendingFiles = [];
 
-    /* ========== SEED DATA (shown if Firebase empty / offline) ========== */
+    /* ========== SEED DATA ========== */
     const seedPhotos = [
       { id: 's1', title: 'Mountain Gorilla – Bwindi', url: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=900&q=80', type: 'photo' },
       { id: 's2', title: 'Safari Drive', url: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=900&q=80', type: 'photo' },
@@ -536,7 +540,7 @@
       { id: 's6', title: 'Wildlife Close-up', url: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=900&q=80', type: 'photo' }
     ];
 
-    /* ========== LOAD FROM FIREBASE ========== */
+    /* ========== LOAD FROM FIRESTORE ========== */
     async function loadGallery() {
       try {
         const snap = await db.collection('gallery').orderBy('createdAt', 'desc').get();
@@ -551,7 +555,7 @@
           photos = [...seedPhotos];
         }
       } catch (e) {
-        console.warn('Firebase load failed, using seed data', e);
+        console.warn('Firestore load failed, using seed data', e);
         photos = [...seedPhotos];
         videos = [];
       }
@@ -754,7 +758,30 @@
       });
     }
 
-    /* ========== UPLOAD ========== */
+    /* ========== CLOUDINARY UPLOAD ========== */
+    async function uploadToCloudinary(file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY.uploadPreset);
+      formData.append('folder', 'viatrix/gallery');
+
+      const resourceType = file.type.startsWith('video/') ? 'video' : 'image';
+      const endpoint = `https://api.cloudinary.com/v1_1/${CLOUDINARY.cloudName}/${resourceType}/upload`;
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error?.message || 'Cloudinary upload failed');
+      }
+
+      return res.json();
+    }
+
+    /* ========== UPLOAD BUTTON ========== */
     document.getElementById('uploadBtn').addEventListener('click', async () => {
       const type = document.getElementById('uploadType').value;
       const title = document.getElementById('uploadTitle').value.trim() || (type === 'video' ? 'Video' : 'Photo');
@@ -777,21 +804,13 @@
         if (pendingFiles.length) {
           for (const file of pendingFiles) {
             const fileType = file.type.startsWith('video/') ? 'video' : 'photo';
-            let downloadUrl = '';
-            try {
-              const path = `gallery/${fileType}s/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-              const ref = storage.ref(path);
-              await ref.put(file);
-              downloadUrl = await ref.getDownloadURL();
-            } catch (storageErr) {
-              console.warn('Storage upload failed, using local preview URL', storageErr);
-              // Fallback: store as object URL won't persist — prefer URL paste in that case
-              throw new Error('Firebase Storage upload failed. Enable Storage in Firebase Console, or paste an image URL instead.');
-            }
+            const result = await uploadToCloudinary(file);
+
             await db.collection('gallery').add({
               type: fileType,
               title: title,
-              url: downloadUrl,
+              url: result.secure_url,
+              public_id: result.public_id,
               createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
           }
@@ -814,7 +833,7 @@
         await loadGallery();
       } catch (err) {
         console.error(err);
-        msg.textContent = err.message || 'Upload failed. Check Firebase config & Storage rules.';
+        msg.textContent = err.message || 'Upload failed. Check Cloudinary cloud name & unsigned preset.';
         msg.className = 'status-msg err';
       } finally {
         btn.disabled = false;
@@ -835,7 +854,7 @@
         renderPhotos();
         renderVideos();
       } catch (e) {
-        alert('Could not delete. Check Firebase permissions.');
+        alert('Could not delete. Check Firestore permissions.');
         console.error(e);
       }
     }
