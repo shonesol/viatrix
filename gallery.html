@@ -5,194 +5,586 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cloudinary Gallery</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #0f0f0f;
-      color: #fff;
-      padding: 40px 20px;
-      min-height: 100vh;
-    }
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    h1 {
-      font-size: 1.9rem;
-      margin-bottom: 8px;
-    }
-    .subtitle {
-      color: #999;
-      margin-bottom: 35px;
+    :root {
+      --bg: #0c0c0e;
+      --surface: #16161a;
+      --surface-hover: #1c1c21;
+      --border: #2a2a30;
+      --border-focus: #3b82f6;
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --success: #22c55e;
+      --error: #ef4444;
+      --radius: 12px;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
     }
 
-    /* Upload area */
-    .upload-box {
-      border: 2px dashed #444;
-      border-radius: 14px;
-      padding: 45px 20px;
-      text-align: center;
-      background: #1a1a1a;
-      margin-bottom: 40px;
-      transition: all 0.2s;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      background: rgba(12, 12, 14, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: white;
+    }
+
+    .brand h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .brand span {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .section-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .upload-box {
+      border: 1.5px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 48px 24px;
+      text-align: center;
+      background: var(--surface);
+      margin-bottom: 48px;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+
     .upload-box:hover,
     .upload-box.dragover {
-      border-color: #3b82f6;
-      background: #151515;
-    }
-    #fileInput { display: none; }
-    .upload-btn {
-      background: #3b82f6;
-      color: white;
-      border: none;
-      padding: 13px 32px;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      margin-top: 18px;
-      transition: background 0.2s;
-    }
-    .upload-btn:hover { background: #2563eb; }
-    .upload-btn:disabled {
-      background: #555;
-      cursor: not-allowed;
-    }
-    #status {
-      margin-top: 16px;
-      font-size: 0.95rem;
-      min-height: 24px;
+      border-color: var(--border-focus);
+      background: var(--surface-hover);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
     }
 
-    /* Gallery grid */
+    .upload-box.dragover { border-style: solid; }
+
+    .upload-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 16px;
+      background: rgba(59, 130, 246, 0.12);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+    }
+
+    .upload-box p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    .upload-box .hint {
+      font-size: 0.8rem;
+      color: #71717a;
+      margin-bottom: 20px;
+    }
+
+    #fileInput { display: none; }
+
+    .upload-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 11px 28px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .upload-btn:hover:not(:disabled) { background: var(--accent-hover); }
+    .upload-btn:active:not(:disabled) { transform: scale(0.98); }
+    .upload-btn:disabled {
+      background: #3f3f46;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    #status {
+      margin-top: 18px;
+      font-size: 0.9rem;
+      min-height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .status-success { color: var(--success); }
+    .status-error { color: var(--error); }
+    .status-info { color: var(--text-muted); }
+
+    .progress-wrap {
+      width: 100%;
+      max-width: 280px;
+      height: 4px;
+      background: #27272a;
+      border-radius: 2px;
+      margin: 14px auto 0;
+      overflow: hidden;
+      display: none;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    .gallery-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .image-count {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .clear-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .clear-btn:hover {
+      border-color: var(--error);
+      color: var(--error);
+    }
+
     .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 16px;
     }
+
     .gallery-item {
       position: relative;
-      border-radius: 12px;
+      border-radius: var(--radius);
       overflow: hidden;
-      background: #1a1a1a;
+      background: var(--surface);
       cursor: pointer;
       aspect-ratio: 1;
+      border: 1px solid var(--border);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s;
     }
+
+    .gallery-item:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
+      border-color: #3f3f46;
+    }
+
     .gallery-item img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: transform 0.3s ease;
-    }
-    .gallery-item:hover img {
-      transform: scale(1.06);
+      transition: transform 0.4s ease;
     }
 
-    /* Lightbox */
+    .gallery-item:hover img { transform: scale(1.05); }
+
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.25s;
+      display: flex;
+      align-items: flex-end;
+      padding: 14px;
+    }
+
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
+
+    .gallery-overlay span {
+      font-size: 0.8rem;
+      color: #e4e4e7;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 64px 24px;
+      color: var(--text-muted);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+
+    .empty-state svg {
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .empty-state p { font-size: 0.95rem; }
+
     #lightbox {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.93);
+      background: rgba(0, 0, 0, 0.92);
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 1000;
       flex-direction: column;
+      padding: 24px;
+      backdrop-filter: blur(8px);
     }
-    #lightbox.open { display: flex; }
+
+    #lightbox.open {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
     #lightbox img {
-      max-width: 92vw;
-      max-height: 82vh;
+      max-width: min(92vw, 1100px);
+      max-height: 80vh;
       border-radius: 10px;
       object-fit: contain;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     }
+
     #lightboxCaption {
-      margin-top: 16px;
-      color: #ccc;
-      font-size: 1.05rem;
+      margin-top: 18px;
+      color: #d4d4d8;
+      font-size: 0.95rem;
+      max-width: 90vw;
+      text-align: center;
     }
+
     .lightbox-close {
       position: absolute;
-      top: 18px;
-      right: 28px;
-      font-size: 2.8rem;
-      color: white;
-      background: none;
-      border: none;
+      top: 20px;
+      right: 24px;
+      width: 44px;
+      height: 44px;
+      font-size: 1.6rem;
+      color: #a1a1aa;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
       line-height: 1;
+    }
+
+    .lightbox-close:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: white;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #3f3f46;
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .footer-note {
+      margin-top: 48px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #52525b;
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 28px 16px 60px; }
+      .header-inner { padding: 14px 16px; }
+      .upload-box { padding: 36px 16px; }
+      .gallery { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Photo Gallery</h1>
-    <p class="subtitle">Images stored on Cloudinary only (no Firebase Storage)</p>
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-icon">G</div>
+        <div>
+          <h1>Photo Gallery</h1>
+          <span>Powered by Cloudinary</span>
+        </div>
+      </div>
+    </div>
+  </header>
 
-    <!-- Upload box -->
+  <div class="container">
+    <p class="section-title">Upload</p>
+
     <div class="upload-box" id="uploadBox">
-      <p>Drag & drop an image here<br>or click the button below</p>
-      <input type="file" id="fileInput" accept="image/*">
-      <br>
-      <button class="upload-btn" id="uploadBtn">Choose Photo</button>
-      <div id="status"></div>
+      <div class="upload-icon">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path d="M12 16V4m0 0l-4 4m4-4l4 4"/>
+          <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
+        </svg>
+      </div>
+      <p>Drag & drop images here</p>
+      <p class="hint">or click the button · PNG, JPG, WEBP, GIF</p>
+      <input type="file" id="fileInput" accept="image/*" multiple>
+      <button class="upload-btn" id="uploadBtn">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 4v16m8-8H4"/>
+        </svg>
+        Choose Photos
+      </button>
+      <div id="status" class="status-info"></div>
+      <div class="progress-wrap" id="progressWrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
     </div>
 
-    <!-- Gallery -->
-    <div class="gallery" id="gallery"></div>
+    <div class="gallery-header">
+      <p class="section-title" style="margin:0">Gallery</p>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span class="image-count" id="imageCount">0 images</span>
+        <button class="clear-btn" id="clearBtn" title="Remove all from this device">Clear gallery</button>
+      </div>
+    </div>
+
+    <div class="gallery" id="gallery">
+      <div class="empty-state" id="emptyState">
+        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <path d="M21 15l-5-5L5 21"/>
+        </svg>
+        <p>No images yet. Upload your first photo above.</p>
+      </div>
+    </div>
+
+    <p class="footer-note">
+      Images are stored permanently on Cloudinary · Gallery list is saved in this browser
+    </p>
   </div>
 
   <!-- Lightbox -->
   <div id="lightbox">
-    <button class="lightbox-close" id="lightboxClose">&times;</button>
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
     <img id="lightboxImage" src="" alt="">
     <div id="lightboxCaption"></div>
   </div>
 
   <script>
     // ========================================
-    //  CHANGE ONLY THIS LINE
+    //  CONFIG – change only these
     // ========================================
-    const CLOUD_NAME = "ziudh5iv";
-    const UPLOAD_PRESET = "viatrix_gallery";   // ← put your preset name here
+    const CLOUD_NAME     = "ziudh5iv";
+    const UPLOAD_PRESET  = "viatrix_gallery";
+    const STORAGE_KEY    = "cloudinary_gallery_images";   // localStorage key
 
     // ========================================
     // Elements
     // ========================================
-    const fileInput   = document.getElementById("fileInput");
-    const uploadBtn   = document.getElementById("uploadBtn");
-    const uploadBox   = document.getElementById("uploadBox");
-    const statusEl    = document.getElementById("status");
-    const gallery     = document.getElementById("gallery");
-    const lightbox    = document.getElementById("lightbox");
-    const lightboxImage = document.getElementById("lightboxImage");
+    const fileInput       = document.getElementById("fileInput");
+    const uploadBtn       = document.getElementById("uploadBtn");
+    const uploadBox       = document.getElementById("uploadBox");
+    const statusEl        = document.getElementById("status");
+    const gallery         = document.getElementById("gallery");
+    const emptyState      = document.getElementById("emptyState");
+    const imageCountEl    = document.getElementById("imageCount");
+    const clearBtn        = document.getElementById("clearBtn");
+    const progressWrap    = document.getElementById("progressWrap");
+    const progressBar     = document.getElementById("progressBar");
+    const lightbox        = document.getElementById("lightbox");
+    const lightboxImage   = document.getElementById("lightboxImage");
     const lightboxCaption = document.getElementById("lightboxCaption");
-    const closeBtn    = document.getElementById("lightboxClose");
+    const closeBtn        = document.getElementById("lightboxClose");
 
     // ========================================
-    // Upload to Cloudinary
+    // Persistence helpers
+    // ========================================
+    function loadSavedImages() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveImages(list) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    function addToStorage(url, title) {
+      const list = loadSavedImages();
+      // avoid duplicates
+      if (list.some(item => item.url === url)) return;
+      list.unshift({ url, title, addedAt: Date.now() });
+      saveImages(list);
+    }
+
+    // ========================================
+    // UI helpers
+    // ========================================
+    function setStatus(msg, type = "info") {
+      statusEl.className = `status-${type}`;
+      statusEl.innerHTML = msg;
+    }
+
+    function updateCount(count) {
+      imageCountEl.textContent = `${count} image${count !== 1 ? "s" : ""}`;
+      emptyState.style.display = count === 0 ? "block" : "none";
+    }
+
+    function thumbUrl(url) {
+      return url.replace("/upload/", "/upload/c_fill,w_420,h_420,q_auto,f_auto/");
+    }
+
+    // ========================================
+    // Gallery rendering
+    // ========================================
+    function createGalleryItem(url, title) {
+      const item = document.createElement("div");
+      item.className = "gallery-item";
+      item.innerHTML = `
+        <img src="${thumbUrl(url)}" alt="${title || "Image"}" loading="lazy">
+        <div class="gallery-overlay">
+          <span>${title || "Untitled"}</span>
+        </div>
+      `;
+      item.addEventListener("click", () => openLightbox(url, title));
+      return item;
+    }
+
+    function renderGallery() {
+      const list = loadSavedImages();
+      // remove existing items (keep empty state)
+      gallery.querySelectorAll(".gallery-item").forEach(el => el.remove());
+
+      list.forEach(({ url, title }) => {
+        gallery.appendChild(createGalleryItem(url, title));
+      });
+
+      updateCount(list.length);
+    }
+
+    // ========================================
+    // Upload
     // ========================================
     async function uploadToCloudinary(file) {
-      if (!file) return;
+      if (!file || !file.type.startsWith("image/")) {
+        setStatus("Please select a valid image file.", "error");
+        return;
+      }
 
-      statusEl.style.color = "#aaa";
-      statusEl.textContent = "Uploading... please wait";
+      setStatus(`<span class="spinner"></span> Uploading ${file.name}…`, "info");
       uploadBtn.disabled = true;
+      progressWrap.style.display = "block";
+      progressBar.style.width = "30%";
 
       const formData = new FormData();
       formData.append("file", file);
       formData.append("upload_preset", UPLOAD_PRESET);
 
       try {
+        const progressTimer = setInterval(() => {
+          const current = parseFloat(progressBar.style.width);
+          if (current < 85) progressBar.style.width = current + 12 + "%";
+        }, 200);
+
         const res = await fetch(
           `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-          {
-            method: "POST",
-            body: formData
-          }
+          { method: "POST", body: formData }
         );
+
+        clearInterval(progressTimer);
+        progressBar.style.width = "100%";
 
         const data = await res.json();
 
@@ -200,29 +592,36 @@
           throw new Error(data.error?.message || "Upload failed");
         }
 
-        // Success
-        addImageToGallery(data.secure_url, file.name);
-        statusEl.style.color = "#4ade80";
-        statusEl.textContent = "Upload successful!";
+        // 1. Save permanently in browser
+        addToStorage(data.secure_url, file.name);
+
+        // 2. Show immediately
+        gallery.prepend(createGalleryItem(data.secure_url, file.name));
+        updateCount(loadSavedImages().length);
+
+        setStatus("Upload successful – image saved permanently", "success");
       } catch (err) {
         console.error(err);
-        statusEl.style.color = "#f87171";
-        statusEl.textContent = "Error: " + err.message;
+        setStatus("Error: " + err.message, "error");
       } finally {
         uploadBtn.disabled = false;
         fileInput.value = "";
+        setTimeout(() => {
+          progressWrap.style.display = "none";
+          progressBar.style.width = "0%";
+        }, 600);
       }
     }
 
-    // ========================================
-    // Add image to the gallery
-    // ========================================
-    function addImageToGallery(url, title) {
-      const item = document.createElement("div");
-      item.className = "gallery-item";
-      item.innerHTML = `<img src="${url}" alt="${title}" loading="lazy">`;
-      item.addEventListener("click", () => openLightbox(url, title));
-      gallery.prepend(item);
+    async function handleFiles(files) {
+      const list = Array.from(files).filter(f => f.type.startsWith("image/"));
+      if (!list.length) {
+        setStatus("No valid image files selected.", "error");
+        return;
+      }
+      for (const file of list) {
+        await uploadToCloudinary(file);
+      }
     }
 
     // ========================================
@@ -232,10 +631,12 @@
       lightboxImage.src = url;
       lightboxCaption.textContent = title || "";
       lightbox.classList.add("open");
+      document.body.style.overflow = "hidden";
     }
 
     function closeLightbox() {
       lightbox.classList.remove("open");
+      document.body.style.overflow = "";
     }
 
     closeBtn.addEventListener("click", closeLightbox);
@@ -247,31 +648,42 @@
     });
 
     // ========================================
-    // Event listeners
+    // Clear gallery (only removes from this browser)
+    // ========================================
+    clearBtn.addEventListener("click", () => {
+      if (!confirm("Remove all images from this gallery?\n(The files stay safely on Cloudinary)")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      renderGallery();
+      setStatus("Gallery cleared from this device", "info");
+    });
+
+    // ========================================
+    // Events
     // ========================================
     uploadBtn.addEventListener("click", () => fileInput.click());
 
     fileInput.addEventListener("change", () => {
-      if (fileInput.files[0]) {
-        uploadToCloudinary(fileInput.files[0]);
-      }
+      if (fileInput.files.length) handleFiles(fileInput.files);
     });
 
-    // Drag & drop
-    uploadBox.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      uploadBox.classList.add("dragover");
+    ["dragenter", "dragover", "dragleave", "drop"].forEach(evt => {
+      uploadBox.addEventListener(evt, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
     });
-    uploadBox.addEventListener("dragleave", () => {
-      uploadBox.classList.remove("dragover");
-    });
+
+    uploadBox.addEventListener("dragover", () => uploadBox.classList.add("dragover"));
+    uploadBox.addEventListener("dragleave", () => uploadBox.classList.remove("dragover"));
     uploadBox.addEventListener("drop", (e) => {
-      e.preventDefault();
       uploadBox.classList.remove("dragover");
-      if (e.dataTransfer.files[0]) {
-        uploadToCloudinary(e.dataTransfer.files[0]);
-      }
+      if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
     });
+
+    // ========================================
+    // Init – load previously saved images
+    // ========================================
+    renderGallery();
   </script>
 </body>
 </html>
