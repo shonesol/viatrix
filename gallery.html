@@ -3,871 +3,275 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gallery – Viatrix Tours & Travel</title>
-
-  <!-- Firebase (Firestore only – for metadata) -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
+  <title>Cloudinary Gallery</title>
   <style>
-    :root {
-      --green: #1B7A3D;
-      --green-dark: #0F4D26;
-      --orange: #F57C00;
-      --orange-dark: #E65100;
-      --black: #0D0D0D;
-      --black-soft: #1A1A1A;
-      --white: #FFFFFF;
-      --white-soft: #F8F8F8;
-      --gray: #E8E8E8;
-      --gray-dark: #666666;
-      --shadow: 0 10px 40px rgba(0,0,0,0.08);
-      --radius: 16px;
-      --transition: all 0.3s ease;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Poppins', sans-serif;
-      color: var(--black);
-      background: var(--white-soft);
-      line-height: 1.6;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      padding: 40px 20px;
       min-height: 100vh;
     }
-    a { text-decoration: none; color: inherit; transition: var(--transition); }
-    img { max-width: 100%; display: block; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 1.9rem;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: #999;
+      margin-bottom: 35px;
+    }
 
-    /* HEADER */
-    header {
-      background: var(--white);
-      box-shadow: 0 2px 20px rgba(0,0,0,0.06);
-      position: sticky; top: 0; z-index: 100;
+    /* Upload area */
+    .upload-box {
+      border: 2px dashed #444;
+      border-radius: 14px;
+      padding: 45px 20px;
+      text-align: center;
+      background: #1a1a1a;
+      margin-bottom: 40px;
+      transition: all 0.2s;
     }
-    .header-inner {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 0; gap: 16px; flex-wrap: wrap;
+    .upload-box:hover,
+    .upload-box.dragover {
+      border-color: #3b82f6;
+      background: #151515;
     }
-    .logo { display: flex; align-items: center; gap: 12px; }
-    .logo-img {
-      width: 48px; height: 48px; object-fit: contain;
-      border-radius: 12px; border: 3px solid var(--orange); background: var(--white);
+    #fileInput { display: none; }
+    .upload-btn {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 13px 32px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 18px;
+      transition: background 0.2s;
     }
-    .logo-text h1 { font-size: 1.15rem; font-weight: 700; line-height: 1.2; }
-    .logo-text span { font-size: 0.72rem; color: var(--green); font-weight: 500; }
-    nav ul { display: flex; list-style: none; gap: 20px; flex-wrap: wrap; }
-    nav a { font-weight: 500; font-size: 0.9rem; color: var(--black-soft); }
-    nav a:hover, nav a.active { color: var(--green); }
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      padding: 11px 24px; border-radius: 50px; font-weight: 600; font-size: 0.88rem;
-      border: none; cursor: pointer; transition: var(--transition); font-family: inherit;
+    .upload-btn:hover { background: #2563eb; }
+    .upload-btn:disabled {
+      background: #555;
+      cursor: not-allowed;
     }
-    .btn-orange { background: var(--orange); color: var(--white); }
-    .btn-orange:hover { background: var(--orange-dark); transform: translateY(-2px); }
-    .btn-green { background: var(--green); color: var(--white); }
-    .btn-green:hover { background: var(--green-dark); }
-    .btn-outline { background: transparent; border: 2px solid var(--gray); color: var(--black-soft); }
-    .btn-outline:hover { border-color: var(--green); color: var(--green); }
-    .btn-sm { padding: 9px 18px; font-size: 0.82rem; }
-    .btn-danger { background: #c62828; color: #fff; }
-    .btn-danger:hover { background: #b71c1c; }
+    #status {
+      margin-top: 16px;
+      font-size: 0.95rem;
+      min-height: 24px;
+    }
 
-    /* HERO */
-    .page-hero {
-      background: linear-gradient(135deg, var(--green-dark), var(--green));
-      color: var(--white); padding: 48px 0 52px; text-align: center; position: relative; overflow: hidden;
-    }
-    .page-hero .badge {
-      display: inline-block; background: var(--orange); padding: 5px 16px;
-      border-radius: 50px; font-size: 0.78rem; font-weight: 600;
-      letter-spacing: 0.5px; margin-bottom: 12px; text-transform: uppercase;
-    }
-    .page-hero h2 { font-size: clamp(1.7rem, 4vw, 2.4rem); font-weight: 800; margin-bottom: 10px; }
-    .page-hero p { max-width: 520px; margin: 0 auto; opacity: 0.9; font-weight: 300; }
-
-    /* TABS */
-    .tabs-bar {
-      background: var(--white); padding: 18px 0;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-      position: sticky; top: 70px; z-index: 90;
-    }
-    .tabs {
-      display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; align-items: center;
-    }
-    .tab-btn {
-      padding: 10px 22px; border-radius: 50px; border: 2px solid var(--gray);
-      background: var(--white); font-family: inherit; font-size: 0.88rem; font-weight: 600;
-      color: var(--black-soft); cursor: pointer; transition: var(--transition);
-    }
-    .tab-btn:hover { border-color: var(--orange); color: var(--orange); }
-    .tab-btn.active { background: var(--green); border-color: var(--green); color: var(--white); }
-
-    /* SECTION */
-    .gallery-section { padding: 40px 0 70px; }
-    .section-head {
-      display: flex; justify-content: space-between; align-items: center;
-      flex-wrap: wrap; gap: 14px; margin-bottom: 28px;
-    }
-    .section-head h3 { font-size: 1.35rem; font-weight: 700; }
-    .section-head p { color: var(--gray-dark); font-size: 0.9rem; }
-
-    /* PHOTO GRID */
-    .photo-grid {
+    /* Gallery grid */
+    .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 14px;
+      gap: 18px;
     }
-    .photo-item {
-      position: relative; border-radius: 12px; overflow: hidden;
-      aspect-ratio: 1; cursor: pointer; background: var(--gray);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-      transition: var(--transition);
+    .gallery-item {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #1a1a1a;
+      cursor: pointer;
+      aspect-ratio: 1;
     }
-    .photo-item:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(0,0,0,0.12); }
-    .photo-item img {
-      width: 100%; height: 100%; object-fit: cover;
-      transition: transform 0.4s ease;
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
     }
-    .photo-item:hover img { transform: scale(1.06); }
-    .photo-item .overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.55), transparent 50%);
-      opacity: 0; transition: var(--transition);
-      display: flex; align-items: flex-end; padding: 12px;
+    .gallery-item:hover img {
+      transform: scale(1.06);
     }
-    .photo-item:hover .overlay { opacity: 1; }
-    .photo-item .caption {
-      color: #fff; font-size: 0.8rem; font-weight: 500;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .photo-item .delete-btn {
-      position: absolute; top: 8px; right: 8px;
-      width: 30px; height: 30px; border-radius: 50%;
-      background: rgba(198,40,40,0.9); color: #fff; border: none;
-      font-size: 0.9rem; cursor: pointer; opacity: 0; transition: var(--transition);
-      display: none; align-items: center; justify-content: center;
-    }
-    .admin-mode .photo-item .delete-btn { display: flex; }
-    .photo-item:hover .delete-btn { opacity: 1; }
 
-    /* VIDEO GRID */
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
-    }
-    .video-item {
-      background: var(--white); border-radius: var(--radius);
-      overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--gray);
-      transition: var(--transition);
-    }
-    .video-item:hover { transform: translateY(-4px); border-color: var(--orange); }
-    .video-thumb {
-      position: relative; aspect-ratio: 16/9; background: var(--black);
-      cursor: pointer; overflow: hidden;
-    }
-    .video-thumb img, .video-thumb video {
-      width: 100%; height: 100%; object-fit: cover;
-    }
-    .video-thumb .play-btn {
-      position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(0,0,0,0.35);
-      transition: var(--transition);
-    }
-    .video-thumb:hover .play-btn { background: rgba(0,0,0,0.5); }
-    .video-thumb .play-btn span {
-      width: 56px; height: 56px; border-radius: 50%;
-      background: var(--orange); color: #fff;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.4rem; box-shadow: 0 6px 20px rgba(245,124,0,0.4);
-    }
-    .video-body { padding: 16px; }
-    .video-body h4 { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
-    .video-body p { font-size: 0.82rem; color: var(--gray-dark); }
-    .video-item .delete-btn {
-      margin-top: 10px; display: none;
-    }
-    .admin-mode .video-item .delete-btn { display: inline-flex; }
-
-    /* EMPTY */
-    .empty-state {
-      text-align: center; padding: 50px 20px; color: var(--gray-dark);
-    }
-    .empty-state h4 { margin-bottom: 8px; color: var(--black); }
-
-    /* LIGHTBOX */
-    .lightbox {
-      position: fixed; inset: 0; z-index: 2000;
-      background: rgba(0,0,0,0.92);
-      display: none; align-items: center; justify-content: center;
+    /* Lightbox */
+    #lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.93);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
       flex-direction: column;
     }
-    .lightbox.show { display: flex; }
-    .lightbox-img-wrap {
-      position: relative; max-width: 90vw; max-height: 80vh;
-      display: flex; align-items: center; justify-content: center;
+    #lightbox.open { display: flex; }
+    #lightbox img {
+      max-width: 92vw;
+      max-height: 82vh;
+      border-radius: 10px;
+      object-fit: contain;
     }
-    .lightbox-img-wrap img, .lightbox-img-wrap video {
-      max-width: 90vw; max-height: 80vh;
-      object-fit: contain; border-radius: 8px;
-      box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+    #lightboxCaption {
+      margin-top: 16px;
+      color: #ccc;
+      font-size: 1.05rem;
     }
-    .lb-btn {
-      position: absolute; top: 50%; transform: translateY(-50%);
-      width: 48px; height: 48px; border-radius: 50%;
-      background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3);
-      color: #fff; font-size: 1.5rem; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: var(--transition); z-index: 5;
-    }
-    .lb-btn:hover { background: var(--orange); border-color: var(--orange); }
-    .lb-prev { left: 16px; }
-    .lb-next { right: 16px; }
-    .lb-close {
-      position: absolute; top: 18px; right: 18px;
-      width: 44px; height: 44px; border-radius: 50%;
-      background: rgba(255,255,255,0.15); border: none;
-      color: #fff; font-size: 1.4rem; cursor: pointer; z-index: 5;
-    }
-    .lb-close:hover { background: var(--orange); }
-    .lb-caption {
-      color: #fff; text-align: center; margin-top: 16px;
-      font-size: 0.95rem; max-width: 80vw;
-    }
-    .lb-counter {
-      color: rgba(255,255,255,0.6); font-size: 0.82rem; margin-top: 6px;
-    }
-    .lb-toolbar {
-      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
-      display: flex; gap: 10px;
-    }
-    .lb-toolbar button {
-      padding: 8px 16px; border-radius: 50px;
-      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25);
-      color: #fff; font-family: inherit; font-size: 0.82rem; cursor: pointer;
-    }
-    .lb-toolbar button:hover { background: var(--orange); border-color: var(--orange); }
-
-    /* ADMIN PANEL */
-    .admin-panel {
-      display: none;
-      background: var(--white);
-      border: 2px solid var(--green);
-      border-radius: var(--radius);
-      padding: 28px;
-      margin-bottom: 30px;
-      box-shadow: var(--shadow);
-    }
-    .admin-panel.show { display: block; }
-    .admin-panel h3 {
-      font-size: 1.15rem; font-weight: 700; margin-bottom: 16px;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .admin-form {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
-    }
-    .admin-form .full { grid-column: 1 / -1; }
-    .admin-form label {
-      display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 6px;
-    }
-    .admin-form input, .admin-form select, .admin-form textarea {
-      width: 100%; padding: 12px 14px; border: 2px solid var(--gray);
-      border-radius: 10px; font-family: inherit; font-size: 0.9rem;
-    }
-    .admin-form input:focus, .admin-form select:focus, .admin-form textarea:focus {
-      outline: none; border-color: var(--green);
-    }
-    .admin-form textarea { min-height: 80px; resize: vertical; }
-    .file-drop {
-      border: 2px dashed var(--gray); border-radius: 12px;
-      padding: 28px; text-align: center; cursor: pointer;
-      transition: var(--transition); background: var(--white-soft);
-    }
-    .file-drop:hover, .file-drop.dragover {
-      border-color: var(--green); background: rgba(27,122,61,0.04);
-    }
-    .file-drop input { display: none; }
-    .file-drop p { font-size: 0.88rem; color: var(--gray-dark); margin-top: 6px; }
-    .upload-preview {
-      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px;
-    }
-    .upload-preview img, .upload-preview video {
-      width: 80px; height: 80px; object-fit: cover; border-radius: 8px;
-      border: 2px solid var(--gray);
-    }
-    .admin-actions {
-      display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px;
-    }
-    .status-msg {
-      margin-top: 12px; padding: 10px 14px; border-radius: 8px;
-      font-size: 0.88rem; font-weight: 500; display: none;
-    }
-    .status-msg.ok { display: block; background: rgba(27,122,61,0.1); color: var(--green); border: 1px solid var(--green); }
-    .status-msg.err { display: block; background: rgba(198,40,40,0.08); color: #c62828; border: 1px solid #c62828; }
-
-    /* LOGIN MODAL */
-    .login-modal {
-      position: fixed; inset: 0; z-index: 3000;
-      background: rgba(0,0,0,0.6);
-      display: none; align-items: center; justify-content: center; padding: 20px;
-    }
-    .login-modal.show { display: flex; }
-    .login-box {
-      background: var(--white); border-radius: var(--radius);
-      padding: 32px; max-width: 380px; width: 100%;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-    }
-    .login-box h3 { font-size: 1.2rem; margin-bottom: 8px; }
-    .login-box p { font-size: 0.88rem; color: var(--gray-dark); margin-bottom: 18px; }
-    .login-box input {
-      width: 100%; padding: 12px 14px; border: 2px solid var(--gray);
-      border-radius: 10px; font-family: inherit; font-size: 0.95rem; margin-bottom: 14px;
-    }
-    .login-box input:focus { outline: none; border-color: var(--green); }
-
-    footer {
-      background: var(--black); color: var(--white);
-      padding: 28px 0; text-align: center; font-size: 0.85rem;
-    }
-    footer a { color: var(--orange); }
-
-    @media (max-width: 768px) {
-      nav { display: none; }
-      .photo-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-      .video-grid { grid-template-columns: 1fr; }
-      .admin-form { grid-template-columns: 1fr; }
-      .lb-prev { left: 8px; }
-      .lb-next { right: 8px; }
+    .lightbox-close {
+      position: absolute;
+      top: 18px;
+      right: 28px;
+      font-size: 2.8rem;
+      color: white;
+      background: none;
+      border: none;
+      cursor: pointer;
+      line-height: 1;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Photo Gallery</h1>
+    <p class="subtitle">Images stored on Cloudinary only (no Firebase Storage)</p>
 
-  <header>
-    <div class="container header-inner">
-      <a href="index.html" class="logo">
-        <img src="531196AE-608A-43EF-9978-CADB0CDABB36.png" alt="Viatrix" class="logo-img" onerror="this.style.display='none'">
-        <div class="logo-text">
-          <h1>Viatrix Tours & Travel</h1>
-          <span>Adventure Awaits</span>
-        </div>
-      </a>
-      <nav>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="itineraries.html">Itineraries</a></li>
-          <li><a href="gallery.html" class="active">Gallery</a></li>
-          <li><a href="book.html">Book Now</a></li>
-        </ul>
-      </nav>
-      <div style="display:flex;gap:10px;align-items:center;">
-        <button class="btn btn-outline btn-sm" id="adminToggle">Admin</button>
-        <a href="book.html" class="btn btn-orange btn-sm">Book a Tour</a>
-      </div>
+    <!-- Upload box -->
+    <div class="upload-box" id="uploadBox">
+      <p>Drag & drop an image here<br>or click the button below</p>
+      <input type="file" id="fileInput" accept="image/*">
+      <br>
+      <button class="upload-btn" id="uploadBtn">Choose Photo</button>
+      <div id="status"></div>
     </div>
-  </header>
 
-  <section class="page-hero">
-    <div class="container">
-      <span class="badge">Memories from the Wild</span>
-      <h2>Photo & Video Gallery</h2>
-      <p>Explore moments from our safaris, gorilla treks and adventures across East Africa.</p>
-    </div>
-  </section>
-
-  <div class="tabs-bar">
-    <div class="container">
-      <div class="tabs">
-        <button class="tab-btn active" data-tab="photos">📷 Photos</button>
-        <button class="tab-btn" data-tab="videos">🎬 Videos</button>
-      </div>
-    </div>
+    <!-- Gallery -->
+    <div class="gallery" id="gallery"></div>
   </div>
 
-  <section class="gallery-section">
-    <div class="container">
-
-      <!-- ADMIN PANEL -->
-      <div class="admin-panel" id="adminPanel">
-        <h3>🔐 Admin Upload (Cloudinary)</h3>
-        <div class="admin-form">
-          <div class="form-group">
-            <label>Type</label>
-            <select id="uploadType">
-              <option value="photo">Photo</option>
-              <option value="video">Video</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Title / Caption</label>
-            <input type="text" id="uploadTitle" placeholder="e.g. Gorillas in Bwindi">
-          </div>
-          <div class="form-group full">
-            <label>Upload file or paste URL</label>
-            <div class="file-drop" id="fileDrop">
-              <input type="file" id="fileInput" accept="image/*,video/*" multiple>
-              <strong>Click or drag files here</strong>
-              <p>Images (JPG, PNG, WebP) or Videos (MP4, WebM) · Max ~100 MB</p>
-            </div>
-            <div style="margin-top:10px;">
-              <input type="url" id="urlInput" placeholder="Or paste image/video URL here...">
-            </div>
-            <div class="upload-preview" id="uploadPreview"></div>
-          </div>
-        </div>
-        <div class="admin-actions">
-          <button class="btn btn-green" id="uploadBtn">Upload to Gallery</button>
-          <button class="btn btn-outline" id="logoutBtn">Exit Admin</button>
-        </div>
-        <div class="status-msg" id="statusMsg"></div>
-      </div>
-
-      <!-- PHOTOS TAB -->
-      <div id="photosTab">
-        <div class="section-head">
-          <div>
-            <h3>Photo Gallery</h3>
-            <p>Click any photo to view full size · Use arrows to browse</p>
-          </div>
-          <span id="photoCount" style="font-size:0.85rem;color:var(--gray-dark);"></span>
-        </div>
-        <div class="photo-grid" id="photoGrid"></div>
-        <div class="empty-state" id="photoEmpty" style="display:none;">
-          <h4>No photos yet</h4>
-          <p>Admin can upload photos using the Admin button above.</p>
-        </div>
-      </div>
-
-      <!-- VIDEOS TAB -->
-      <div id="videosTab" style="display:none;">
-        <div class="section-head">
-          <div>
-            <h3>Video Gallery</h3>
-            <p>Watch safari moments and trek highlights</p>
-          </div>
-          <span id="videoCount" style="font-size:0.85rem;color:var(--gray-dark);"></span>
-        </div>
-        <div class="video-grid" id="videoGrid"></div>
-        <div class="empty-state" id="videoEmpty" style="display:none;">
-          <h4>No videos yet</h4>
-          <p>Admin can upload videos using the Admin button above.</p>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- LIGHTBOX -->
-  <div class="lightbox" id="lightbox">
-    <button class="lb-close" id="lbClose" aria-label="Close">×</button>
-    <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous">‹</button>
-    <button class="lb-btn lb-next" id="lbNext" aria-label="Next">›</button>
-    <div class="lightbox-img-wrap" id="lbMedia"></div>
-    <div class="lb-caption" id="lbCaption"></div>
-    <div class="lb-counter" id="lbCounter"></div>
-    <div class="lb-toolbar">
-      <button id="lbFullscreen">⛶ Fullscreen</button>
-    </div>
+  <!-- Lightbox -->
+  <div id="lightbox">
+    <button class="lightbox-close" id="lightboxClose">&times;</button>
+    <img id="lightboxImage" src="" alt="">
+    <div id="lightboxCaption"></div>
   </div>
-
-  <!-- ADMIN LOGIN -->
-  <div class="login-modal" id="loginModal">
-    <div class="login-box">
-      <h3>Admin Access</h3>
-      <p>Enter the admin password to upload or delete media.</p>
-      <input type="password" id="adminPassword" placeholder="Password" autocomplete="current-password">
-      <div style="display:flex;gap:10px;">
-        <button class="btn btn-green" id="loginBtn" style="flex:1;">Login</button>
-        <button class="btn btn-outline" id="loginCancel" style="flex:1;">Cancel</button>
-      </div>
-      <p id="loginError" style="color:#c62828;font-size:0.82rem;margin-top:10px;display:none;">Wrong password</p>
-    </div>
-  </div>
-
-  <footer>
-    <div class="container">
-      <p>&copy; 2026 Viatrix Tours & Travel ·
-        <a href="tel:+256777271601">+256 777 271 601</a> ·
-        <a href="mailto:viatrixtoursandtravelco@gmail.com">viatrixtoursandtravelco@gmail.com</a>
-      </p>
-    </div>
-  </footer>
 
   <script>
-    /* ========== FIREBASE (Firestore only) ========== */
-    const firebaseConfig = {
-        apiKey: "AIzaSyAFDXJuv-279zcsJ-Qry41uxNyXNlC4Cpw",
+    // ========================================
+    //  CHANGE ONLY THIS LINE
+    // ========================================
+    const CLOUD_NAME = "ziudh5iv";
+    const UPLOAD_PRESET = "YOUR_UNSIGNED_PRESET";   // ← put your preset name here
 
-    authDomain: "viatrix-4d7ef.firebaseapp.com",
+    // ========================================
+    // Elements
+    // ========================================
+    const fileInput   = document.getElementById("fileInput");
+    const uploadBtn   = document.getElementById("uploadBtn");
+    const uploadBox   = document.getElementById("uploadBox");
+    const statusEl    = document.getElementById("status");
+    const gallery     = document.getElementById("gallery");
+    const lightbox    = document.getElementById("lightbox");
+    const lightboxImage = document.getElementById("lightboxImage");
+    const lightboxCaption = document.getElementById("lightboxCaption");
+    const closeBtn    = document.getElementById("lightboxClose");
 
-    projectId: "viatrix-4d7ef",
+    // ========================================
+    // Upload to Cloudinary
+    // ========================================
+    async function uploadToCloudinary(file) {
+      if (!file) return;
 
-    storageBucket: "viatrix-4d7ef.firebasestorage.app",
+      statusEl.style.color = "#aaa";
+      statusEl.textContent = "Uploading... please wait";
+      uploadBtn.disabled = true;
 
-    messagingSenderId: "734351535565",
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", UPLOAD_PRESET);
 
-    appId: "1:734351535565:web:7df7d9fdd0c1f24d45e884",
-
-    measurementId: "G-9JBX94MZ9E"
-    };
-
-    // Change this password
-    const ADMIN_PASSWORD = 'viatrix2026';
-
-    /* ========== CLOUDINARY ========== */
-    const CLOUDINARY = {
-      cloudName: 'ziudh5iv',              // ← your cloud name
-      uploadPreset: 'viatrix_gallery'     // ← unsigned preset name
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    /* ========== STATE ========== */
-    let photos = [];
-    let videos = [];
-    let isAdmin = false;
-    let currentIndex = 0;
-    let lightboxMode = 'photo';
-    let pendingFiles = [];
-
-    /* ========== SEED DATA ========== */
-    const seedPhotos = [
-      { id: 's1', title: 'Mountain Gorilla – Bwindi', url: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=900&q=80', type: 'photo' },
-      { id: 's2', title: 'Safari Drive', url: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=900&q=80', type: 'photo' },
-      { id: 's3', title: 'Waterfall Trek', url: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=900&q=80', type: 'photo' },
-      { id: 's4', title: 'Lake Victoria Sunset', url: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=900&q=80', type: 'photo' },
-      { id: 's5', title: 'Trekking Trail', url: 'https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?w=900&q=80', type: 'photo' },
-      { id: 's6', title: 'Wildlife Close-up', url: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=900&q=80', type: 'photo' }
-    ];
-
-    /* ========== LOAD FROM FIRESTORE ========== */
-    async function loadGallery() {
       try {
-        const snap = await db.collection('gallery').orderBy('createdAt', 'desc').get();
-        photos = [];
-        videos = [];
-        snap.forEach(doc => {
-          const d = { id: doc.id, ...doc.data() };
-          if (d.type === 'video') videos.push(d);
-          else photos.push(d);
-        });
-        if (!photos.length && !videos.length) {
-          photos = [...seedPhotos];
+        const res = await fetch(
+          `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+          {
+            method: "POST",
+            body: formData
+          }
+        );
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error?.message || "Upload failed");
         }
-      } catch (e) {
-        console.warn('Firestore load failed, using seed data', e);
-        photos = [...seedPhotos];
-        videos = [];
+
+        // Success
+        addImageToGallery(data.secure_url, file.name);
+        statusEl.style.color = "#4ade80";
+        statusEl.textContent = "Upload successful!";
+      } catch (err) {
+        console.error(err);
+        statusEl.style.color = "#f87171";
+        statusEl.textContent = "Error: " + err.message;
+      } finally {
+        uploadBtn.disabled = false;
+        fileInput.value = "";
       }
-      renderPhotos();
-      renderVideos();
     }
 
-    /* ========== RENDER PHOTOS ========== */
-    function renderPhotos() {
-      const grid = document.getElementById('photoGrid');
-      const empty = document.getElementById('photoEmpty');
-      document.getElementById('photoCount').textContent = photos.length + ' photo' + (photos.length !== 1 ? 's' : '');
-
-      if (!photos.length) {
-        grid.innerHTML = '';
-        empty.style.display = 'block';
-        return;
-      }
-      empty.style.display = 'none';
-      grid.innerHTML = photos.map((p, i) => `
-        <div class="photo-item" data-index="${i}">
-          <img src="${p.url}" alt="${p.title || 'Gallery photo'}" loading="lazy">
-          <div class="overlay"><span class="caption">${p.title || ''}</span></div>
-          <button class="delete-btn" data-id="${p.id}" data-type="photo" title="Delete">🗑</button>
-        </div>
-      `).join('');
-
-      grid.querySelectorAll('.photo-item').forEach(el => {
-        el.addEventListener('click', e => {
-          if (e.target.classList.contains('delete-btn')) return;
-          openLightbox('photo', parseInt(el.dataset.index));
-        });
-      });
-      grid.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', e => {
-          e.stopPropagation();
-          deleteItem(btn.dataset.id, btn.dataset.type);
-        });
-      });
+    // ========================================
+    // Add image to the gallery
+    // ========================================
+    function addImageToGallery(url, title) {
+      const item = document.createElement("div");
+      item.className = "gallery-item";
+      item.innerHTML = `<img src="${url}" alt="${title}" loading="lazy">`;
+      item.addEventListener("click", () => openLightbox(url, title));
+      gallery.prepend(item);
     }
 
-    /* ========== RENDER VIDEOS ========== */
-    function renderVideos() {
-      const grid = document.getElementById('videoGrid');
-      const empty = document.getElementById('videoEmpty');
-      document.getElementById('videoCount').textContent = videos.length + ' video' + (videos.length !== 1 ? 's' : '');
-
-      if (!videos.length) {
-        grid.innerHTML = '';
-        empty.style.display = 'block';
-        return;
-      }
-      empty.style.display = 'none';
-      grid.innerHTML = videos.map((v, i) => `
-        <div class="video-item">
-          <div class="video-thumb" data-index="${i}">
-            ${v.thumb ? `<img src="${v.thumb}" alt="">` : `<video src="${v.url}" muted preload="metadata"></video>`}
-            <div class="play-btn"><span>▶</span></div>
-          </div>
-          <div class="video-body">
-            <h4>${v.title || 'Video'}</h4>
-            <p>${v.caption || ''}</p>
-            <button class="btn btn-danger btn-sm delete-btn" data-id="${v.id}" data-type="video">Delete</button>
-          </div>
-        </div>
-      `).join('');
-
-      grid.querySelectorAll('.video-thumb').forEach(el => {
-        el.addEventListener('click', () => openLightbox('video', parseInt(el.dataset.index)));
-      });
-      grid.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', () => deleteItem(btn.dataset.id, btn.dataset.type));
-      });
-    }
-
-    /* ========== LIGHTBOX ========== */
-    function openLightbox(mode, index) {
-      lightboxMode = mode;
-      currentIndex = index;
-      showLightboxItem();
-      document.getElementById('lightbox').classList.add('show');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function showLightboxItem() {
-      const list = lightboxMode === 'photo' ? photos : videos;
-      if (!list.length) return;
-      currentIndex = (currentIndex + list.length) % list.length;
-      const item = list[currentIndex];
-      const media = document.getElementById('lbMedia');
-
-      if (lightboxMode === 'photo') {
-        media.innerHTML = `<img src="${item.url}" alt="${item.title || ''}">`;
-      } else {
-        media.innerHTML = `<video src="${item.url}" controls autoplay playsinline style="max-width:90vw;max-height:80vh;border-radius:8px;"></video>`;
-      }
-      document.getElementById('lbCaption').textContent = item.title || '';
-      document.getElementById('lbCounter').textContent = `${currentIndex + 1} / ${list.length}`;
+    // ========================================
+    // Lightbox
+    // ========================================
+    function openLightbox(url, title) {
+      lightboxImage.src = url;
+      lightboxCaption.textContent = title || "";
+      lightbox.classList.add("open");
     }
 
     function closeLightbox() {
-      document.getElementById('lightbox').classList.remove('show');
-      document.body.style.overflow = '';
-      const vid = document.querySelector('#lbMedia video');
-      if (vid) vid.pause();
+      lightbox.classList.remove("open");
     }
 
-    document.getElementById('lbClose').addEventListener('click', closeLightbox);
-    document.getElementById('lbPrev').addEventListener('click', () => { currentIndex--; showLightboxItem(); });
-    document.getElementById('lbNext').addEventListener('click', () => { currentIndex++; showLightboxItem(); });
-    document.getElementById('lightbox').addEventListener('click', e => {
-      if (e.target.id === 'lightbox') closeLightbox();
+    closeBtn.addEventListener("click", closeLightbox);
+    lightbox.addEventListener("click", (e) => {
+      if (e.target === lightbox) closeLightbox();
     });
-    document.addEventListener('keydown', e => {
-      if (!document.getElementById('lightbox').classList.contains('show')) return;
-      if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowLeft') { currentIndex--; showLightboxItem(); }
-      if (e.key === 'ArrowRight') { currentIndex++; showLightboxItem(); }
-    });
-    document.getElementById('lbFullscreen').addEventListener('click', () => {
-      const el = document.getElementById('lightbox');
-      if (!document.fullscreenElement) el.requestFullscreen?.();
-      else document.exitFullscreen?.();
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeLightbox();
     });
 
-    /* ========== TABS ========== */
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const tab = btn.dataset.tab;
-        document.getElementById('photosTab').style.display = tab === 'photos' ? 'block' : 'none';
-        document.getElementById('videosTab').style.display = tab === 'videos' ? 'block' : 'none';
-      });
-    });
+    // ========================================
+    // Event listeners
+    // ========================================
+    uploadBtn.addEventListener("click", () => fileInput.click());
 
-    /* ========== ADMIN ========== */
-    document.getElementById('adminToggle').addEventListener('click', () => {
-      if (isAdmin) {
-        document.getElementById('adminPanel').classList.toggle('show');
-      } else {
-        document.getElementById('loginModal').classList.add('show');
-        document.getElementById('adminPassword').focus();
+    fileInput.addEventListener("change", () => {
+      if (fileInput.files[0]) {
+        uploadToCloudinary(fileInput.files[0]);
       }
     });
 
-    document.getElementById('loginBtn').addEventListener('click', () => {
-      const pw = document.getElementById('adminPassword').value;
-      if (pw === ADMIN_PASSWORD) {
-        isAdmin = true;
-        document.body.classList.add('admin-mode');
-        document.getElementById('loginModal').classList.remove('show');
-        document.getElementById('adminPanel').classList.add('show');
-        document.getElementById('adminPassword').value = '';
-        document.getElementById('loginError').style.display = 'none';
-        document.getElementById('adminToggle').textContent = 'Admin Panel';
-      } else {
-        document.getElementById('loginError').style.display = 'block';
-      }
-    });
-    document.getElementById('loginCancel').addEventListener('click', () => {
-      document.getElementById('loginModal').classList.remove('show');
-    });
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      isAdmin = false;
-      document.body.classList.remove('admin-mode');
-      document.getElementById('adminPanel').classList.remove('show');
-      document.getElementById('adminToggle').textContent = 'Admin';
-    });
-    document.getElementById('adminPassword').addEventListener('keydown', e => {
-      if (e.key === 'Enter') document.getElementById('loginBtn').click();
-    });
-
-    /* ========== FILE UPLOAD UI ========== */
-    const fileDrop = document.getElementById('fileDrop');
-    const fileInput = document.getElementById('fileInput');
-    fileDrop.addEventListener('click', () => fileInput.click());
-    fileDrop.addEventListener('dragover', e => { e.preventDefault(); fileDrop.classList.add('dragover'); });
-    fileDrop.addEventListener('dragleave', () => fileDrop.classList.remove('dragover'));
-    fileDrop.addEventListener('drop', e => {
+    // Drag & drop
+    uploadBox.addEventListener("dragover", (e) => {
       e.preventDefault();
-      fileDrop.classList.remove('dragover');
-      handleFiles(e.dataTransfer.files);
+      uploadBox.classList.add("dragover");
     });
-    fileInput.addEventListener('change', () => handleFiles(fileInput.files));
-
-    function handleFiles(files) {
-      pendingFiles = Array.from(files);
-      const preview = document.getElementById('uploadPreview');
-      preview.innerHTML = '';
-      pendingFiles.forEach(f => {
-        const url = URL.createObjectURL(f);
-        if (f.type.startsWith('video/')) {
-          preview.innerHTML += `<video src="${url}" muted></video>`;
-          document.getElementById('uploadType').value = 'video';
-        } else {
-          preview.innerHTML += `<img src="${url}" alt="">`;
-          document.getElementById('uploadType').value = 'photo';
-        }
-      });
-    }
-
-    /* ========== CLOUDINARY UPLOAD ========== */
-    async function uploadToCloudinary(file) {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', CLOUDINARY.uploadPreset);
-      formData.append('folder', 'viatrix/gallery');
-
-      const resourceType = file.type.startsWith('video/') ? 'video' : 'image';
-      const endpoint = `https://api.cloudinary.com/v1_1/${CLOUDINARY.cloudName}/${resourceType}/upload`;
-
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        body: formData
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error?.message || 'Cloudinary upload failed');
-      }
-
-      return res.json();
-    }
-
-    /* ========== UPLOAD BUTTON ========== */
-    document.getElementById('uploadBtn').addEventListener('click', async () => {
-      const type = document.getElementById('uploadType').value;
-      const title = document.getElementById('uploadTitle').value.trim() || (type === 'video' ? 'Video' : 'Photo');
-      const urlPaste = document.getElementById('urlInput').value.trim();
-      const msg = document.getElementById('statusMsg');
-      msg.className = 'status-msg';
-      msg.textContent = '';
-
-      if (!pendingFiles.length && !urlPaste) {
-        msg.textContent = 'Please select a file or paste a URL.';
-        msg.className = 'status-msg err';
-        return;
-      }
-
-      const btn = document.getElementById('uploadBtn');
-      btn.disabled = true;
-      btn.textContent = 'Uploading...';
-
-      try {
-        if (pendingFiles.length) {
-          for (const file of pendingFiles) {
-            const fileType = file.type.startsWith('video/') ? 'video' : 'photo';
-            const result = await uploadToCloudinary(file);
-
-            await db.collection('gallery').add({
-              type: fileType,
-              title: title,
-              url: result.secure_url,
-              public_id: result.public_id,
-              createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-          }
-        } else if (urlPaste) {
-          await db.collection('gallery').add({
-            type: type,
-            title: title,
-            url: urlPaste,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          });
-        }
-
-        msg.textContent = 'Uploaded successfully!';
-        msg.className = 'status-msg ok';
-        document.getElementById('uploadTitle').value = '';
-        document.getElementById('urlInput').value = '';
-        document.getElementById('uploadPreview').innerHTML = '';
-        pendingFiles = [];
-        fileInput.value = '';
-        await loadGallery();
-      } catch (err) {
-        console.error(err);
-        msg.textContent = err.message || 'Upload failed. Check Cloudinary cloud name & unsigned preset.';
-        msg.className = 'status-msg err';
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Upload to Gallery';
+    uploadBox.addEventListener("dragleave", () => {
+      uploadBox.classList.remove("dragover");
+    });
+    uploadBox.addEventListener("drop", (e) => {
+      e.preventDefault();
+      uploadBox.classList.remove("dragover");
+      if (e.dataTransfer.files[0]) {
+        uploadToCloudinary(e.dataTransfer.files[0]);
       }
     });
-
-    /* ========== DELETE ========== */
-    async function deleteItem(id, type) {
-      if (!isAdmin) return;
-      if (!confirm('Delete this item?')) return;
-      try {
-        if (!id.startsWith('s')) {
-          await db.collection('gallery').doc(id).delete();
-        }
-        if (type === 'video') videos = videos.filter(v => v.id !== id);
-        else photos = photos.filter(p => p.id !== id);
-        renderPhotos();
-        renderVideos();
-      } catch (e) {
-        alert('Could not delete. Check Firestore permissions.');
-        console.error(e);
-      }
-    }
-
-    /* ========== INIT ========== */
-    loadGallery();
   </script>
 </body>
 </html>
